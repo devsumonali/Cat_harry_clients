@@ -8,7 +8,7 @@ import { FiMenu, FiX, FiUser } from 'react-icons/fi';
 const navLinks = [
      { label: 'Explore Studios', href: '/explore_studios' },
      { label: 'How It Works', href: '/how_it_works' },
-     { label: 'Host Space', href: '/add_studio' },
+     { label: 'Host Space', href: '/host_space' },
      { label: 'About', href: '/about' },
 ];
 

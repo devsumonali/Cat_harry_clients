@@ -1,5 +1,165 @@
-const Footer = () => {
-     return <div>This is our Footer</div>;
-};
+import Link from 'next/link';
+import { FiInstagram, FiBriefcase } from 'react-icons/fi';
+import { FaXTwitter } from 'react-icons/fa6';
 
-export default Footer;
+const footerLinks = [
+     {
+          title: 'Explore',
+          links: [
+               { label: 'Daylight Lofts', href: '/daylight-lofts' },
+               { label: 'Film Stages', href: '/film-stages' },
+               { label: 'Podcast Rooms', href: '/podcast-rooms' },
+               { label: 'Music Suites', href: '/music-suites' },
+               { label: 'Art Workshops', href: '/art-workshops' },
+          ],
+     },
+     {
+          title: 'Hosting',
+          links: [
+               { label: 'List Your Space', href: '/list-your-space' },
+               { label: 'Host Community', href: '/host-community' },
+               { label: 'Resource Center', href: '/resource-center' },
+               {
+                    label: 'Insurance & Protection',
+                    href: '/insurance-protection',
+               },
+          ],
+     },
+     {
+          title: 'Company',
+          links: [
+               { label: 'About StudioSpace', href: '/about' },
+               { label: 'Careers', href: '/careers' },
+               { label: 'Press & Media', href: '/press' },
+               { label: 'Contact Support', href: '/contact' },
+          ],
+     },
+];
+
+const socialLinks = [
+     {
+          label: 'X',
+          href: 'https://x.com',
+          icon: FaXTwitter,
+     },
+     {
+          label: 'Instagram',
+          href: 'https://instagram.com',
+          icon: FiInstagram,
+     },
+     {
+          label: 'Portfolio',
+          href: '/portfolio',
+          icon: FiBriefcase,
+     },
+];
+
+export default function Footer() {
+     return (
+          <footer className="w-full border-t border-[#EEEAE8] bg-[#FAF8F7] text-[#292524]">
+               <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+                    {/* Main Footer */}
+                    <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.8fr_0.85fr_0.85fr_0.85fr] lg:gap-12 lg:py-16">
+                         {/* Brand */}
+                         <div>
+                              <Link
+                                   href="/"
+                                   className="inline-block text-[19px] font-bold tracking-tight text-[#D73516]"
+                              >
+                                   StudioSpace
+                              </Link>
+
+                              <p className="mt-4 max-w-[290px] text-[13px] leading-[1.8] text-[#57534E]">
+                                   The premier marketplace connecting world-class creators,
+                                   photographers, and filmmakers with extraordinary production
+                                   spaces.
+                              </p>
+
+                              {/* Social Icons */}
+                              <div className="mt-6 flex items-center gap-3">
+                                   {socialLinks.map((social) => {
+                                        const Icon = social.icon;
+
+                                        return (
+                                             <Link
+                                                  key={social.label}
+                                                  href={social.href}
+                                                  aria-label={social.label}
+                                                  target={
+                                                       social.href.startsWith('https')
+                                                            ? '_blank'
+                                                            : undefined
+                                                  }
+                                                  rel={
+                                                       social.href.startsWith('https')
+                                                            ? 'noopener noreferrer'
+                                                            : undefined
+                                                  }
+                                                  className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F0EDEC] text-[#292524] transition-all duration-200 hover:bg-[#D73516] hover:text-white"
+                                             >
+                                                  <Icon size={15} />
+                                             </Link>
+                                        );
+                                   })}
+                              </div>
+                         </div>
+
+                         {/* Footer Links */}
+                         {footerLinks.map((section) => (
+                              <div key={section.title}>
+                                   <h3 className="mb-5 text-[13px] font-semibold text-[#292524]">
+                                        {section.title}
+                                   </h3>
+
+                                   <ul className="space-y-3">
+                                        {section.links.map((link) => (
+                                             <li key={link.label}>
+                                                  <Link
+                                                       href={link.href}
+                                                       className="text-[13px] leading-relaxed text-[#57534E] transition-colors duration-200 hover:text-[#D73516]"
+                                                  >
+                                                       {link.label}
+                                                  </Link>
+                                             </li>
+                                        ))}
+                                   </ul>
+                              </div>
+                         ))}
+                    </div>
+               </div>
+
+               {/* Bottom Footer */}
+               <div className="border-t border-[#EEEAE8]">
+                    <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
+                         <p className="text-center text-[11px] text-[#57534E] md:text-left">
+                              © {new Date().getFullYear()} StudioSpace Marketplace Inc. All rights
+                              reserved.
+                         </p>
+
+                         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                              <Link
+                                   href="/privacy-policy"
+                                   className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
+                              >
+                                   Privacy Policy
+                              </Link>
+
+                              <Link
+                                   href="/terms-of-service"
+                                   className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
+                              >
+                                   Terms of Service
+                              </Link>
+
+                              <Link
+                                   href="/cookie-settings"
+                                   className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
+                              >
+                                   Cookie Settings
+                              </Link>
+                         </div>
+                    </div>
+               </div>
+          </footer>
+     );
+}

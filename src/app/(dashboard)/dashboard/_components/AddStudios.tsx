@@ -1,15 +1,7 @@
 'use client';
-import {
-     FiCamera,
-     FiDollarSign,
-     FiGrid,
-     FiImage,
-     FiInfo,
-     FiMapPin,
-     FiPlus,
-     FiUploadCloud,
-     FiZap,
-} from 'react-icons/fi';
+import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
+import { FiDollarSign, FiGrid, FiInfo, FiMapPin, FiZap } from 'react-icons/fi';
 import {
      LuBuilding2,
      LuClapperboard,
@@ -17,29 +9,7 @@ import {
      LuSlidersHorizontal,
      LuWarehouse,
 } from 'react-icons/lu';
-
-const categories = [
-     {
-          name: 'Daylight Loft',
-          value: 'daylight-loft',
-          icon: LuLightbulb,
-     },
-     {
-          name: 'Cyc Wall',
-          value: 'cyc-wall',
-          icon: LuClapperboard,
-     },
-     {
-          name: 'Soundstage',
-          value: 'soundstage',
-          icon: LuSlidersHorizontal,
-     },
-     {
-          name: 'Industrial',
-          value: 'industrial',
-          icon: LuWarehouse,
-     },
-];
+import { TCategory } from '@/app/types/type';
 
 const amenities = [
      'U-Shaped Cyclorama Wall',
@@ -82,11 +52,27 @@ function SectionHeading({
 }
 
 const AddStudios = () => {
+     const [categories, setCategories] = useState<TCategory[]>([]);
+
+     useEffect(() => {
+          const getCategories = async () => {
+               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+
+               const data = await response.json();
+               setCategories(data);
+          };
+
+          getCategories();
+     }, []);
+
      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault();
           const form = e.currentTarget;
           const formData = new FormData(form);
-          const studios = Object.fromEntries(formData.entries());
+          const studios = {
+               ...Object.fromEntries(formData.entries()),
+               amenities: formData.getAll('amenities'),
+          };
           const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, {
                method: 'POST',
                headers: {
@@ -96,7 +82,11 @@ const AddStudios = () => {
           });
           const data = await result.json();
 
-          if (data.acknowledged) {
+          if (data.acknowledged || data.success) {
+               toast.success('Studio added successfully!');
+               form.reset();
+          } else {
+               toast.error('Failed to add studio!');
           }
      };
      return (
@@ -168,23 +158,36 @@ const AddStudios = () => {
                                              />
                                         </div>
 
+                                        {/* category */}
+
                                         <div>
                                              <label className={labelClass}>Studio Category</label>
 
                                              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                                                   {categories.map((category) => {
-                                                       const Icon = category.icon;
+                                                       const iconMap = {
+                                                            lightbulb: LuLightbulb,
+                                                            clapperboard: LuClapperboard,
+                                                            sliders: LuSlidersHorizontal,
+                                                            warehouse: LuWarehouse,
+                                                       };
+
+                                                       const Icon =
+                                                            iconMap[
+                                                                 category.icon as keyof typeof iconMap
+                                                            ] || LuBuilding2;
 
                                                        return (
                                                             <label
-                                                                 key={category.value}
+                                                                 key={category._id}
                                                                  className="cursor-pointer"
                                                             >
                                                                  <input
                                                                       type="radio"
                                                                       name="category"
-                                                                      value={category.value}
+                                                                      value={category.slug}
                                                                       className="peer sr-only"
+                                                                      required
                                                                  />
 
                                                                  <div className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-xl border border-[#eee7e3] bg-[#faf8f7] px-2 py-4 text-center transition hover:border-[#c63717]/50 peer-checked:border-[#c63717] peer-checked:bg-[#fff6f2] peer-focus-visible:ring-2 peer-focus-visible:ring-[#c63717]">
@@ -192,6 +195,7 @@ const AddStudios = () => {
                                                                            size={21}
                                                                            className="text-[#bd3516]"
                                                                       />
+
                                                                       <span className="text-xs font-medium text-[#282322]">
                                                                            {category.name}
                                                                       </span>
@@ -299,78 +303,24 @@ const AddStudios = () => {
                                    </div>
                               </section>
 
-                              {/* Studio Gallery */}
-                              <section className="rounded-xl border border-[#f1edeb] bg-white p-5 sm:p-7">
-                                   <SectionHeading
-                                        icon={FiImage}
-                                        title="Studio Gallery"
-                                        description="Upload high-res architectural photos. First image will be the primary cover."
-                                   />
-
-                                   <label
-                                        htmlFor="studioImages"
-                                        className="flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#edcfc3] bg-[#fcfaf9] px-4 py-8 text-center transition hover:border-[#c63717] hover:bg-[#fff8f5]"
-                                   >
-                                        <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#fae9e2] text-[#c63717]">
-                                             <FiUploadCloud size={24} />
-                                        </span>
-
-                                        <span className="text-sm font-semibold text-[#282322]">
-                                             Drag and drop studio photography here
-                                        </span>
-
-                                        <span className="mt-1 text-xs text-[#8f8580]">
-                                             Supports high-res JPG, PNG, WEBP
-                                        </span>
-
-                                        <span className="mt-5 rounded-full bg-[#eeebea] px-5 py-2 text-xs font-semibold text-[#39312e]">
-                                             Browse Files
-                                        </span>
-
-                                        <input
-                                             id="studioImages"
-                                             type="file"
-                                             name="images"
-                                             accept="image/jpeg,image/png,image/webp"
-                                             multiple
-                                             className="sr-only"
-                                        />
+                              {/* Image URL Field */}
+                              <div className="mb-6">
+                                   <label htmlFor="imageUrl" className={labelClass}>
+                                        Studio Image URL
                                    </label>
 
-                                   {/* Gallery Preview UI */}
-                                   <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                        {['Cover Image', 'Studio Interior', 'Studio Equipment'].map(
-                                             (item, index) => (
-                                                  <div
-                                                       key={item}
-                                                       className="relative flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border border-[#eee7e3] bg-[#f7f4f2]"
-                                                  >
-                                                       {index === 0 && (
-                                                            <span className="absolute left-2 top-2 rounded bg-[#bd3516] px-2 py-1 text-[10px] font-semibold text-white">
-                                                                 Cover
-                                                            </span>
-                                                       )}
+                                   <input
+                                        id="imageUrl"
+                                        name="imageUrl"
+                                        type="url"
+                                        placeholder="https://example.com/studio-image.jpg"
+                                        className={inputClass}
+                                   />
 
-                                                       <FiCamera
-                                                            size={24}
-                                                            className="text-[#b4a8a1]"
-                                                       />
-                                                       <span className="px-2 text-center text-[11px] text-[#978b85]">
-                                                            {item}
-                                                       </span>
-                                                  </div>
-                                             ),
-                                        )}
-
-                                        <label
-                                             htmlFor="studioImages"
-                                             className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-[#e9cfc3] text-[#746b66] transition hover:bg-[#fff6f2]"
-                                        >
-                                             <FiPlus size={23} />
-                                             <span className="text-xs">Add More</span>
-                                        </label>
-                                   </div>
-                              </section>
+                                   <p className="mt-2 text-xs text-[#978b85]">
+                                        Paste a direct image URL for your studio.
+                                   </p>
+                              </div>
 
                               {/* Amenities */}
                               <section className="rounded-xl border border-[#f1edeb] bg-white p-5 sm:p-7">
@@ -534,14 +484,6 @@ const AddStudios = () => {
                                                        placeholder="10001"
                                                        className={inputClass}
                                                   />
-                                             </div>
-                                        </div>
-
-                                        {/* Map Placeholder */}
-                                        <div className="flex h-48 items-center justify-center rounded-xl border border-[#eadcd5] bg-[#f5e9e3]">
-                                             <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-medium text-[#39302c] shadow-sm">
-                                                  <FiMapPin className="text-[#c63717]" />
-                                                  Studio Location Preview
                                              </div>
                                         </div>
                                    </div>
