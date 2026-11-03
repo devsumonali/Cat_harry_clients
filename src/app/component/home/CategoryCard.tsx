@@ -5,7 +5,7 @@ import Link from 'next/link';
 const CategoryCard = ({ category, image }: CategoryCardProps) => {
      return (
           <Link
-               href={`/category/${encodeURIComponent(category.slug)}`}
+               href={`/studios?category=${encodeURIComponent(category.slug)}`}
                className="group relative block h-61.25 overflow-hidden rounded-xl bg-[#292929] md:h-67.5"
           >
                {/* Static Background Image */}

@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { auth } from '@/app/libs/auth';
+import { getSession } from '@/app/libs/session';
 
 export async function proxy(request: NextRequest) {
-     const session = await auth.api.getSession({ headers: request.headers });
+     const session = await getSession(request.headers);
      if (!session) {
           const loginURL = new URL('/login', request.url);
           loginURL.searchParams.set('callbackURL', request.nextUrl.pathname + request.nextUrl.search);
@@ -12,5 +12,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-     matcher: ['/dashboard/:path*'],
+     matcher: ['/dashboard/:path*', '/add-studio', '/my-listings', '/my-bookings', '/studios/edit/:path*'],
 };

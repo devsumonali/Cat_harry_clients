@@ -1,3 +1,4 @@
+import NewsletterForm from '@/app/component/shared/NewsletterForm';
 import Link from 'next/link';
 import { FiInstagram, FiBriefcase } from 'react-icons/fi';
 import { FaXTwitter } from 'react-icons/fa6';
@@ -6,22 +7,22 @@ const footerLinks = [
      {
           title: 'Explore',
           links: [
-               { label: 'Daylight Lofts', href: '/daylight-lofts' },
-               { label: 'Film Stages', href: '/film-stages' },
-               { label: 'Podcast Rooms', href: '/podcast-rooms' },
-               { label: 'Music Suites', href: '/music-suites' },
-               { label: 'Art Workshops', href: '/art-workshops' },
+               { label: 'Daylight Lofts', href: '/studios?category=daylight-loft' },
+               { label: 'Film Stages', href: '/studios?category=soundstage' },
+               { label: 'Podcast Rooms', href: '/studios?category=podcast-lounge' },
+               { label: 'Music Suites', href: '/studios?category=music-suite' },
+               { label: 'Art Workshops', href: '/studios?category=workshop' },
           ],
      },
      {
           title: 'Hosting',
           links: [
-               { label: 'List Your Space', href: '/list-your-space' },
-               { label: 'Host Community', href: '/host-community' },
-               { label: 'Resource Center', href: '/resource-center' },
+               { label: 'List Your Space', href: '/add-studio' },
+               { label: 'Host Community', href: '/host_space' },
+               { label: 'Resource Center', href: '/how_it_works' },
                {
-                    label: 'Insurance & Protection',
-                    href: '/insurance-protection',
+                    label: 'My Studio Listings',
+                    href: '/my-listings',
                },
           ],
      },
@@ -29,9 +30,9 @@ const footerLinks = [
           title: 'Company',
           links: [
                { label: 'About StudioSpace', href: '/about' },
-               { label: 'Careers', href: '/careers' },
-               { label: 'Press & Media', href: '/press' },
-               { label: 'Contact Support', href: '/contact' },
+               { label: 'Explore Studios', href: '/studios' },
+               { label: 'How It Works', href: '/how_it_works' },
+               { label: 'Messages', href: '/dashboard/messages' },
           ],
      },
 ];
@@ -48,8 +49,8 @@ const socialLinks = [
           icon: FiInstagram,
      },
      {
-          label: 'Portfolio',
-          href: '/portfolio',
+          label: 'Explore Studios',
+          href: '/studios',
           icon: FiBriefcase,
      },
 ];
@@ -129,6 +130,7 @@ export default async function Footer() {
                     </div>
                </div>
 
+               <div className="mx-auto mb-8 w-full max-w-md px-4"><h2 className="text-sm font-semibold">StudioSpace newsletter</h2><NewsletterForm compact /><p className="mt-3 text-xs text-[#81756d]">Booking requests require host confirmation. No payment is collected here.</p></div>
                {/* Bottom Footer */}
                <div className="border-t border-[#EEEAE8]">
                     <div className="mx-auto flex max-w-300 flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
@@ -139,24 +141,24 @@ export default async function Footer() {
 
                          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
                               <Link
-                                   href="/privacy-policy"
+                                   href="/about"
                                    className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
                               >
-                                   Privacy Policy
+                                   About StudioSpace
                               </Link>
 
                               <Link
-                                   href="/terms-of-service"
+                                   href="/how_it_works"
                                    className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
                               >
-                                   Terms of Service
+                                   Booking Guide
                               </Link>
 
                               <Link
-                                   href="/cookie-settings"
+                                   href="/dashboard/settings"
                                    className="text-[11px] text-[#57534E] transition-colors hover:text-[#D73516]"
                               >
-                                   Cookie Settings
+                                   Account Settings
                               </Link>
                          </div>
                     </div>

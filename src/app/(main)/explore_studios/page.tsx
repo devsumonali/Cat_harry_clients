@@ -1,11 +1,12 @@
+import SaveStudioButton from '@/app/component/shared/SaveStudioButton';
 import { getCategories } from '@/app/libs/api';
 import type { TExploreStudio, ExploreStudiosPageProps, ExploreStudioCardProps, FilterSidebarProps } from '@/app/types/type';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import {
      FiChevronLeft,
      FiChevronRight,
-     FiHeart,
      FiMapPin,
      FiStar,
      FiX,
@@ -55,13 +56,7 @@ const ExploreStudioCard = ({ studio }: ExploreStudioCardProps) => {
                          </span>
                     )}
 
-                    {/* Wishlist - UI Only */}
-                    <span
-                         title="Wishlist coming soon"
-                         className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-[#292321]"
-                    >
-                         <FiHeart size={15} />
-                    </span>
+                    <SaveStudioButton studioId={studio._id} />
 
                     {/* Location */}
                     {studio.city && (
@@ -351,4 +346,6 @@ const ExploreStudiosPage = async ({ searchParams }: ExploreStudiosPageProps) => 
      );
 };
 
-export default ExploreStudiosPage;
+export default function ExploreStudios(props: ExploreStudiosPageProps) {
+     return <Suspense fallback={<div className="container mx-auto px-4 py-12 text-sm text-[#817a76]" role="status">Loading studios…</div>}><ExploreStudiosPage {...props} /></Suspense>;
+}

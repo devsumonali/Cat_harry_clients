@@ -1,9 +1,4 @@
 import type { ElementType, ReactNode } from 'react';
-import type { MongoClient } from 'mongodb';
-
-export interface AuthMongoGlobal {
-     authMongoClient?: MongoClient;
-}
 
 export interface TCategory {
      _id: string;
@@ -27,6 +22,11 @@ export interface TStudio {
 }
 
 export interface TStudioDetails extends TStudio {
+     reviews?: StudioReview[];
+     ownerId?: string;
+     ownerEmail?: string;
+     ownerName?: string;
+     images?: string[];
      description?: string;
      ceilingHeight?: number | string;
      maxCapacity?: number | string;
@@ -159,7 +159,7 @@ export interface DashboardStudio extends TStudioDetails {
 
 export interface DashboardBooking extends Omit<BookingRequest, 'status'> {
      _id: string;
-     status: 'pending' | 'confirmed' | 'cancelled' | 'rejected';
+     status: 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'rejected';
 }
 
 export interface DashboardMessage {
@@ -186,5 +186,27 @@ export interface DashboardData {
 }
 
 export interface DashboardViewProps {
-     section: 'overview' | 'my_bookings' | 'saved_spaces' | 'messages';
+     section: 'overview' | 'my_listings' | 'my_bookings' | 'saved_spaces' | 'messages';
 }
+
+export interface DialogProps {
+     open: boolean;
+     title: string;
+     onClose: () => void;
+     children: ReactNode;
+}
+
+export interface ConfirmationRequest {
+     message: string;
+     onConfirm: () => void;
+}
+
+export interface StudioFormProps { studio?: TStudioDetails; }
+export interface ImageUploadProps { initialValue?: string; onBusyChange?: (busy: boolean) => void; }
+export interface SaveStudioProps { studioId: string; }
+export interface SessionUser { id: string; name: string; email: string; }
+export interface DashboardSummary { bookingCount: number; hasUnreadMessages: boolean; }
+export interface MutationResponse extends BookingResponse { success?: boolean; }
+export interface StudioReview { _id?: string; name: string; rating: number; comment: string; }
+export interface ApplicationErrorProps { error: unknown; retry: () => void; }
+export interface NewsletterFormProps { compact?: boolean; }

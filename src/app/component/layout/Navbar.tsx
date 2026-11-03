@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import ThemeToggle from '@/app/component/shared/ThemeToggle';
 import { authClient } from '@/app/libs/auth-client';
-import { FiMenu, FiX, FiUser } from 'react-icons/fi';
+import { FiAperture, FiMenu, FiX, FiUser } from 'react-icons/fi';
 
 const navLinks = [
-     { label: 'Explore Studios', href: '/explore_studios' },
+     { label: 'Home', href: '/' },
+     { label: 'Explore Studios', href: '/studios' },
      { label: 'How It Works', href: '/how_it_works' },
      { label: 'Host Space', href: '/host_space' },
      { label: 'About', href: '/about' },
@@ -18,6 +20,7 @@ const navLinks = [
 const accountLinks = [
      { label: 'Dashboard', href: '/dashboard/overview' },
      { label: 'Add New Studio', href: '/dashboard/add_studios' },
+     { label: 'My Studio Listings', href: '/dashboard/my_listings' },
      { label: 'My Bookings', href: '/dashboard/my_bookings' },
 ];
 
@@ -61,7 +64,7 @@ const Navbar = () => {
                          className="shrink-0 text-[22px] font-extrabold tracking-[-0.8px] text-[#D52B00]"
                          onClick={() => setMobileOpen(false)}
                     >
-                         StudioSpace
+                         <span className="inline-flex items-center gap-2"><FiAperture aria-hidden="true" />StudioSpace</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -93,7 +96,7 @@ const Navbar = () => {
                                         <div className="absolute right-0 top-12 w-60 overflow-hidden rounded-lg border border-gray-100 bg-white py-2 shadow-lg">
                                              <div className="border-b border-gray-100 px-4 py-3"><p className="truncate text-sm font-semibold">{session.user.name}</p><p className="mt-1 truncate text-xs text-gray-500">{session.user.email}</p></div>
                                              {accountLinks.map((link) => <Link key={link.href} href={link.href} onClick={() => setProfileOpen(false)} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50">{link.label}</Link>)}
-                                             <button type="button" disabled={loggingOut} onClick={handleLogout} className="w-full px-4 py-2.5 text-left text-sm font-medium text-[#D52B00] hover:bg-orange-50 disabled:opacity-50">{loggingOut ? 'Logging out?' : 'Logout'}</button>
+                                             <button type="button" disabled={loggingOut} onClick={handleLogout} className="w-full px-4 py-2.5 text-left text-sm font-medium text-[#D52B00] hover:bg-orange-50 disabled:opacity-50">{loggingOut ? 'Logging out...' : 'Logout'}</button>
                                         </div>
                                    )}
                               </div>
@@ -103,6 +106,7 @@ const Navbar = () => {
                          {sessionError && <span className="sr-only" role="status">Unable to check your session. Please refresh.</span>}
                     </div>
 
+                    <ThemeToggle />
                     {/* Mobile Menu Button */}
                     <button
                          type="button"
@@ -135,11 +139,11 @@ const Navbar = () => {
                               ))}
 
                               <div className="mt-3 border-t border-gray-100 pt-4">
-                                   {isPending ? <p role="status" className="px-3 text-sm text-gray-500">Checking session?</p> : session ? (
+                                   {isPending ? <p role="status" className="px-3 text-sm text-gray-500">Checking session...</p> : session ? (
                                         <div className="space-y-1">
                                              <div className="flex items-center gap-3 px-3 pb-3"><span className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#C52D08] text-white">{avatar}</span><span className="truncate text-sm font-semibold">{session.user.name}</span></div>
                                              {accountLinks.map((link) => <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block rounded-md px-3 py-3 text-sm text-gray-700 hover:bg-orange-50">{link.label}</Link>)}
-                                             <button type="button" disabled={loggingOut} onClick={handleLogout} className="w-full px-3 py-3 text-left text-sm font-semibold text-[#D52B00] disabled:opacity-50">{loggingOut ? 'Logging out?' : 'Logout'}</button>
+                                             <button type="button" disabled={loggingOut} onClick={handleLogout} className="w-full px-3 py-3 text-left text-sm font-semibold text-[#D52B00] disabled:opacity-50">{loggingOut ? 'Logging out...' : 'Logout'}</button>
                                         </div>
                                    ) : (
                                         <div className="flex gap-3"><Link href="/login" onClick={() => setMobileOpen(false)} className="flex-1 rounded-lg border border-[#D52B00] px-4 py-2.5 text-center text-sm font-semibold text-[#D52B00]">Login</Link><Link href="/register" onClick={() => setMobileOpen(false)} className="flex-1 rounded-lg bg-[#D52B00] px-4 py-2.5 text-center text-sm font-semibold text-white">Register</Link></div>

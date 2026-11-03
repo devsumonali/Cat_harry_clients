@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type FormEvent } from 'react';
+import { useId, useRef, useState, type FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { createBooking } from '@/app/libs/api';
@@ -22,6 +22,7 @@ function minutes(time: string) {
 
 export default function BookingPanel({ studio }: BookingPanelProps) {
      const router = useRouter();
+     const formId = useId();
      const { data: session, isPending: sessionPending } = authClient.useSession();
      const minimumHours = Number(studio.minimumBookingHours) || 1;
      const capacity = Number(studio.maxCapacity) || undefined;
@@ -114,13 +115,13 @@ export default function BookingPanel({ studio }: BookingPanelProps) {
                     <fieldset disabled={submitting} className="space-y-3 disabled:opacity-70">
                          <div className="rounded-xl bg-[#f7f5f4] p-3.5">
                               <label
-                                   htmlFor="booking-date"
+                                   htmlFor={`${formId}-date`}
                                    className="block text-[10px] uppercase text-[#655a54]"
                               >
                                    Booking date
                               </label>
                               <input
-                                   id="booking-date"
+                                   id={`${formId}-date`}
                                    type="date"
                                    required
                                    value={bookingDate}
@@ -131,13 +132,13 @@ export default function BookingPanel({ studio }: BookingPanelProps) {
                          <div className="grid grid-cols-2 gap-3">
                               <div className="min-w-0 rounded-xl bg-[#f7f5f4] p-3.5">
                                    <label
-                                        htmlFor="booking-start"
+                                        htmlFor={`${formId}-start`}
                                         className="block text-[10px] uppercase text-[#655a54]"
                                    >
                                         Start time
                                    </label>
                                    <input
-                                        id="booking-start"
+                                        id={`${formId}-start`}
                                         type="time"
                                         required
                                         value={startTime}
@@ -147,13 +148,13 @@ export default function BookingPanel({ studio }: BookingPanelProps) {
                               </div>
                               <div className="min-w-0 rounded-xl bg-[#f7f5f4] p-3.5">
                                    <label
-                                        htmlFor="booking-end"
+                                        htmlFor={`${formId}-end`}
                                         className="block text-[10px] uppercase text-[#655a54]"
                                    >
                                         End time
                                    </label>
                                    <input
-                                        id="booking-end"
+                                        id={`${formId}-end`}
                                         type="time"
                                         required
                                         value={endTime}

@@ -1,27 +1,27 @@
 const steps = [
      {
           number: '01',
-          title: 'Discover & Filter',
+          title: 'Discover Spaces',
           description:
-               'Search by location, specific gear inventory, dimensions, or backdrop style.',
+               'Browse studios by category, hourly rate and the amenities your project needs.',
      },
      {
           number: '02',
-          title: 'Instant Booking',
+          title: 'Select Shoot Hours',
           description:
-               'Secure your exact hours with transparent pricing and no hidden facility fees.',
+               'Choose your date, start and end times, and crew size. Review the estimated total.',
      },
      {
           number: '03',
-          title: 'Direct Access',
+          title: 'Request Your Booking',
           description:
-               'Receive smart lock codes and host contact details instantly upon confirmation.',
+               "Send your request and track the host's response in My Bookings.",
      },
      {
           number: '04',
-          title: 'Create & Wrap',
+          title: 'Create & Produce',
           description:
-               'Focus entirely on your creative output while we handle secure payments and receipts.',
+               'Once confirmed, coordinate with your host and bring your creative project to life.',
      },
 ];
 

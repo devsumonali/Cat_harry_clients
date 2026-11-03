@@ -1,11 +1,7 @@
 
 
-const OverView = () => {
-     return (
-          <div>
-               OverView
-          </div>
-     );
-};
+import DashboardView from '../_components/DashboardView';
 
-export default OverView;
+const Overview = () => <DashboardView section="overview" />;
+
+export default Overview;

@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from './component/layout/Navbar';
 import { Toaster } from 'react-hot-toast';
 import Footer from './component/layout/Footer';
+import { Suspense } from 'react';
 
 const inter = Inter({
      subsets: ['latin'],
@@ -19,9 +20,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
      return (
-          <html lang="en" className={inter.variable}>
+          <html lang="en" className={inter.variable} suppressHydrationWarning>
+               <head><script dangerouslySetInnerHTML={{ __html: "try{document.documentElement.dataset.theme=localStorage.getItem('studiospace-theme')==='dark'?'dark':'light'}catch(e){}" }} /></head>
                <body className="flex min-h-screen flex-col font-sans antialiased">
-                    <Navbar />
+                    <Suspense fallback={<div className="h-20 border-b border-[#eee7e3] bg-white" aria-label="Loading navigation" />}>
+                         <Navbar />
+                    </Suspense>
                     {children}
                     <Toaster position="top-right" />
                     <Footer />

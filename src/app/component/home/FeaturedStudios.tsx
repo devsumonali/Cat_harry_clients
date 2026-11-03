@@ -16,7 +16,7 @@ const FeaturedStudios = () => {
      useEffect(() => {
           const getStudios = async () => {
                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`);
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/featured`);
 
                     if (!response.ok) {
                          throw new Error('Failed to fetch studios');

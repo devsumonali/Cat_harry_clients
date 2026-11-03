@@ -1,4 +1,6 @@
 'use client';
+import SaveStudioButton from '@/app/component/shared/SaveStudioButton';
+
 
 import type { StudioCardProps } from '@/app/types/type';
 import Image from 'next/image';
@@ -35,6 +37,7 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                          )}
                     </Link>
 
+                    <SaveStudioButton studioId={studio._id} />
                     {/* Location */}
                     {studio.city && (
                          <span className="absolute bottom-3 left-3 rounded-full bg-[#242424]/85 px-3 py-1.5 text-xs text-white backdrop-blur-sm">

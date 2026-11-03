@@ -1,0 +1,42 @@
+// Client API contract checks with mocked fetch; no network/database writes.
+const fs = require('node:fs');
+const ts = require('typescript');
+const assert = require('node:assert/strict');
+const output = ts.transpileModule(fs.readFileSync('src/app/libs/api.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const api = {};
+new Function('exports', output)(api);
+process.env.NEXT_PUBLIC_API_URL = 'http://localhost:8000/api';
+let request;
+global.fetch = async (url, options) => { request = { url, ...options }; return Response.json({ insertedId: 'saved-id', success: true }); };
+
+(async () => {
+     await api.getMyBookings('guest+test@example.com');
+     assert.equal(request.url, 'http://localhost:8000/api/studios/my-booking?email=guest%2Btest%40example.com');
+     assert.equal(request.credentials, 'include');
+     await api.createBooking({ studioId: 'studio', userEmail: 'guest@example.com' });
+     assert.equal(request.url, 'http://localhost:8000/api/studios/booking');
+     assert.equal(JSON.parse(request.body).userEmail, 'guest@example.com');
+     await api.dashboardAction('cancelBooking', 'booking');
+     assert.equal(request.url, 'http://localhost:8000/api/studios/booking/booking/cancel');
+     assert.equal(request.method, 'PATCH');
+     const form = new FormData();
+     form.set('title', 'Studio'); form.set('ownerEmail', 'spoof@example.com');
+     form.set('galleryImages', 'https://example.com/one.jpg\nhttps://example.com/two.jpg');
+     form.append('amenities', 'Wi-Fi'); form.append('amenities', 'Lighting');
+     const user = { id: 'host', name: 'Host', email: 'host@example.com' };
+     await api.saveStudio(form, user);
+     assert.equal(request.method, 'POST');
+     const payload = JSON.parse(request.body);
+     assert.equal(payload.ownerEmail, user.email);
+     assert.equal(payload.email, user.email);
+     assert.deepEqual(payload.amenities, ['Wi-Fi', 'Lighting']);
+     assert.equal(payload.images.length, 2);
+     await api.saveStudio(form, user, 'studio');
+     assert.equal(request.method, 'PATCH');
+     assert.equal(request.url, 'http://localhost:8000/api/studios/studio');
+     global.fetch = async () => Response.json({ message: 'Please log in.' }, { status: 401 });
+     await assert.rejects(api.getMyBookings(user.email), (error) => error.status === 401);
+     global.fetch = async () => Response.json({ acknowledged: true });
+     await assert.rejects(api.createBooking({}), /not confirmed as saved/);
+     console.log('PASS: Express endpoints, encoded email, cookies, session-derived form values, gallery payload, update/cancel methods and failure handling.');
+})().catch((error) => { console.error(error); process.exitCode = 1; });

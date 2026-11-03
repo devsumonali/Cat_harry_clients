@@ -2,8 +2,9 @@
 import toast from 'react-hot-toast';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { publishStudio } from '../actions';
-import { getCategories } from '@/app/libs/api';
+import { authClient } from '@/app/libs/auth-client';
+import ImageUpload from '@/app/component/shared/ImageUpload';
+import { getCategories, saveStudio } from '@/app/libs/api';
 import { FiDollarSign, FiGrid, FiInfo, FiMapPin, FiZap } from 'react-icons/fi';
 import {
      LuBuilding2,
@@ -12,7 +13,7 @@ import {
      LuSlidersHorizontal,
      LuWarehouse,
 } from 'react-icons/lu';
-import type { TCategory, SectionHeadingProps } from '@/app/types/type';
+import type { TCategory, SectionHeadingProps, StudioFormProps } from '@/app/types/type';
 
 const amenities = [
      'U-Shaped Cyclorama Wall',
@@ -50,7 +51,9 @@ function SectionHeading({
      );
 }
 
-const AddStudios = () => {
+const AddStudios = ({ studio }: StudioFormProps) => {
+     const { data: session, isPending } = authClient.useSession();
+     const [uploading, setUploading] = useState(false);
      const [categories, setCategories] = useState<TCategory[]>([]);
      const [submitting, setSubmitting] = useState(false);
      const inFlight = useRef(false);
@@ -65,19 +68,17 @@ const AddStudios = () => {
 
      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault();
-          if (inFlight.current) return;
+          if (inFlight.current || uploading || isPending) return;
+          if (!session) { router.push('/login?callbackURL=' + encodeURIComponent(studio ? '/studios/edit/' + studio._id : '/add-studio')); return; }
           const form = e.currentTarget;
           const formData = new FormData(form);
           inFlight.current = true;
           setSubmitting(true);
           try {
-               const result = await publishStudio(formData);
-               if (result.unauthorized) {
-                    router.push('/login?callbackURL=%2Fdashboard%2Fadd_studios');
-               }
-               if (result.error) { toast.error(result.error); return; }
-               toast.success('Studio added successfully!');
-               form.reset();
+               const result = await saveStudio(formData, session.user, studio?._id);
+               if (!studio && !result.insertedId) throw new Error('Studio was not confirmed as saved.');
+               toast.success(studio ? 'Studio updated successfully!' : 'Studio added successfully!');
+               router.push('/my-listings');
                router.refresh();
           } catch {
                toast.error('Failed to add studio. Please try again.');
@@ -102,7 +103,7 @@ const AddStudios = () => {
                          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
                               <div>
                                    <h1 className="text-3xl font-extrabold tracking-tight text-[#171717] md:text-4xl">
-                                        List Your Creative Space
+                                        {studio ? 'Update Your Studio' : 'List Your Creative Space'}
                                    </h1>
 
                                    <p className="mt-3 max-w-xl text-sm leading-6 text-[#716966]">
@@ -116,7 +117,7 @@ const AddStudios = () => {
                                    <button
                                         type="submit"
                                         form="studio-form"
-                                        disabled={submitting}
+                                        disabled={submitting || uploading || isPending}
                                         className="rounded-full cursor-pointer bg-[#ba310f] px-6 py-3 text-xs font-semibold text-white shadow-md shadow-orange-900/15 transition hover:bg-[#922508]"
                                    >
                                         {submitting ? 'Publishing…' : 'Publish Studio'}
@@ -125,6 +126,10 @@ const AddStudios = () => {
                          </div>
                     </div>
 
+                    <section className="mb-6 grid gap-4 rounded-xl border border-[#eee7e3] bg-white p-5 sm:grid-cols-2">
+                         <label className={labelClass}>Host name<input readOnly value={session?.user.name || ''} className={inputClass} /></label>
+                         <label className={labelClass}>Host email<input readOnly value={session?.user.email || ''} className={inputClass} /></label>
+                    </section>
                     {/* Main Form */}
                     <form
                          onSubmit={handleSubmit}
@@ -150,6 +155,7 @@ const AddStudios = () => {
                                              <input
                                                   id="studioTitle"
                                                   name="title"
+                                                  defaultValue={studio?.title ?? ''}
                                                   type="text"
                                                   placeholder="e.g. The Grand Daylight Cyclorama & Loft"
                                                   className={inputClass}
@@ -184,6 +190,7 @@ const AddStudios = () => {
                                                                       type="radio"
                                                                       name="category"
                                                                       value={category.slug}
+                                                                      defaultChecked={studio?.category === category.slug}
                                                                       className="peer sr-only"
                                                                       required
                                                                  />
@@ -212,6 +219,7 @@ const AddStudios = () => {
                                              <textarea
                                                   id="description"
                                                   name="description"
+                                                  defaultValue={studio?.description ?? ''}
                                                   rows={5}
                                                   placeholder="Describe the architectural uniqueness, morning vs evening light quality, power drops, freight access, and ideal production types..."
                                                   className={`${inputClass} resize-y`}
@@ -238,6 +246,7 @@ const AddStudios = () => {
                                                        id="squareFootage"
                                                        type="number"
                                                        name="squareFootage"
+                                                  defaultValue={studio?.squareFootage ?? ''}
                                                        min="0"
                                                        placeholder="2400"
                                                        className={`${inputClass} pr-12`}
@@ -257,6 +266,7 @@ const AddStudios = () => {
                                                        id="ceilingHeight"
                                                        type="number"
                                                        name="ceilingHeight"
+                                                  defaultValue={studio?.ceilingHeight ?? ''}
                                                        min="0"
                                                        placeholder="16"
                                                        className={`${inputClass} pr-12`}
@@ -276,6 +286,7 @@ const AddStudios = () => {
                                                        id="capacity"
                                                        type="number"
                                                        name="maxCapacity"
+                                                  defaultValue={studio?.maxCapacity ?? ''}
                                                        min="1"
                                                        placeholder="25"
                                                        className={`${inputClass} pr-16`}
@@ -294,6 +305,7 @@ const AddStudios = () => {
                                                   id="powerSupply"
                                                   type="text"
                                                   name="powerSupply"
+                                                  defaultValue={studio?.powerSupply ?? ''}
                                                   placeholder="100A / 3-Phase"
                                                   className={inputClass}
                                              />
@@ -307,19 +319,14 @@ const AddStudios = () => {
                                         Studio Image URL
                                    </label>
 
-                                   <input
-                                        id="imageUrl"
-                                        name="imageUrl"
-                                        type="url"
-                                        placeholder="https://example.com/studio-image.jpg"
-                                        className={inputClass}
-                                   />
+                                   <ImageUpload initialValue={studio?.imageUrl || studio?.image} onBusyChange={setUploading} />
 
                                    <p className="mt-2 text-xs text-[#978b85]">
                                         Paste a direct image URL for your studio.
                                    </p>
                               </div>
 
+                              <label className={labelClass}>Additional gallery images (one URL per line)<textarea name="galleryImages" rows={3} defaultValue={studio?.images?.join('\n') || ''} className={inputClass} /></label>
                               {/* Amenities */}
                               <section className="rounded-xl border border-[#f1edeb] bg-white p-5 sm:p-7">
                                    <SectionHeading
@@ -338,6 +345,7 @@ const AddStudios = () => {
                                                        type="checkbox"
                                                        name="amenities"
                                                        value={amenity}
+                                                       defaultChecked={studio?.amenities?.includes(amenity)}
                                                        className="h-4 w-4 shrink-0 cursor-pointer accent-[#c63717]"
                                                   />
 
@@ -373,6 +381,7 @@ const AddStudios = () => {
                                                        id="hourlyRate"
                                                        type="number"
                                                        name="hourlyRate"
+                                                  defaultValue={studio?.hourlyRate ?? ''}
                                                        min="0"
                                                        placeholder="150"
                                                        className={`${inputClass} pl-7 pr-12`}
@@ -398,6 +407,7 @@ const AddStudios = () => {
                                                        id="securityDeposit"
                                                        type="number"
                                                        name="securityDeposit"
+                                                  defaultValue={studio?.securityDeposit ?? ''}
                                                        min="0"
                                                        placeholder="300"
                                                        className={`${inputClass} pl-7 pr-14`}
@@ -418,7 +428,7 @@ const AddStudios = () => {
                                              <select
                                                   id="minimumHours"
                                                   name="minimumBookingHours"
-                                                  defaultValue="2"
+                                                  defaultValue={studio?.minimumBookingHours ?? '2'}
                                                   className={inputClass}
                                              >
                                                   <option value="1">1 Hour Minimum</option>
@@ -449,6 +459,7 @@ const AddStudios = () => {
                                                   id="streetAddress"
                                                   type="text"
                                                   name="streetAddress"
+                                                  defaultValue={studio?.streetAddress ?? ''}
                                                   placeholder="450 W 31st St, Floor 8"
                                                   className={inputClass}
                                              />
@@ -463,6 +474,7 @@ const AddStudios = () => {
                                                        id="city"
                                                        type="text"
                                                        name="city"
+                                                  defaultValue={studio?.city ?? ''}
                                                        placeholder="Chelsea, NYC"
                                                        className={inputClass}
                                                   />
@@ -479,6 +491,7 @@ const AddStudios = () => {
                                                        id="postalCode"
                                                        type="text"
                                                        name="postalCode"
+                                                  defaultValue={studio?.postalCode ?? ''}
                                                        placeholder="10001"
                                                        className={inputClass}
                                                   />
@@ -504,6 +517,7 @@ const AddStudios = () => {
                                                   id="overtimePolicy"
                                                   type="text"
                                                   name="overtimePolicy"
+                                                  defaultValue={studio?.overtimePolicy ?? ''}
                                                   placeholder="1.5x Hourly Rate for Overtime"
                                                   className={inputClass}
                                              />
@@ -516,6 +530,7 @@ const AddStudios = () => {
                                              <textarea
                                                   id="houseRules"
                                                   name="houseRules"
+                                                  defaultValue={studio?.houseRules ?? ''}
                                                   rows={5}
                                                   placeholder="No smoking inside studio. All furniture must be returned to original placement. Catering permitted in lounge area only..."
                                                   className={`${inputClass} resize-y`}

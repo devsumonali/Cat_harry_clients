@@ -4,6 +4,8 @@ import type { SidebarProps } from '@/app/types/type';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getDashboardSummary } from '@/app/libs/api';
 import {
      FiArrowRight,
      FiBookmark,
@@ -16,6 +18,7 @@ import {
 
 const menuItems = [
      { label: 'Overview', href: '/dashboard/overview', icon: FiGrid },
+     { label: 'My Studio Listings', href: '/dashboard/my_listings', icon: FiGrid },
      { label: 'My Bookings', href: '/dashboard/my_bookings', icon: FiCalendar },
      { label: 'Saved Spaces', href: '/dashboard/saved_spaces', icon: FiBookmark },
      { label: 'Messages', href: '/dashboard/messages', icon: FiMessageSquare },
@@ -30,6 +33,19 @@ export default function Sidebar({
      hasUnreadMessages = true,
 }: SidebarProps) {
      const pathname = usePathname();
+     const [counts, setCounts] = useState({ bookingCount, hasUnreadMessages });
+     useEffect(() => {
+          let active = true;
+          const refresh = async () => {
+               try {
+                    const data = await getDashboardSummary();
+                    if (active) setCounts(data);
+               } catch { /* Keep the last known counts if the request fails. */ }
+          };
+          void refresh();
+          window.addEventListener('dashboard-updated', refresh);
+          return () => { active = false; window.removeEventListener('dashboard-updated', refresh); };
+     }, [pathname]);
      const initials = name
           .trim()
           .split(/\s+/)
@@ -84,13 +100,13 @@ export default function Sidebar({
                                                   className="shrink-0"
                                              />
                                              <span>{label}</span>
-                                             {label === 'My Bookings' && bookingCount > 0 && (
+                                             {label === 'My Bookings' && counts.bookingCount > 0 && (
                                                   <span className="ml-auto flex min-h-5.75 min-w-5.25 items-center justify-center rounded-full border border-[#bd350d] bg-[#ff6a32] px-1 text-xs text-[#301307]">
-                                                       {bookingCount}
+                                                       {counts.bookingCount}
                                                        <span className="sr-only"> bookings</span>
                                                   </span>
                                              )}
-                                             {label === 'Messages' && hasUnreadMessages && (
+                                             {label === 'Messages' && counts.hasUnreadMessages && (
                                                   <span
                                                        className={`ml-auto size-1.5 rounded-full ${active ? 'bg-white' : 'bg-[#b92d00]'}`}
                                                   >
@@ -121,7 +137,7 @@ export default function Sidebar({
                     </p>
 
                     <Link
-                         href="/host_space"
+                         href="/dashboard/add_studios"
                          className="mt-3 flex min-h-10 items-center justify-center gap-2 rounded-full border border-white bg-[#b92d00] px-3 py-2 text-[13px] text-white transition-colors hover:bg-[#982600] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b92d00]"
                     >
                          List Your Studio <FiArrowRight size={15} aria-hidden="true" />

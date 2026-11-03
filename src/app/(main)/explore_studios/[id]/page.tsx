@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { FiArrowLeft, FiCheck, FiClock, FiMapPin, FiShield } from 'react-icons/fi';
-import StudioImage from './StudioImage';
-import BookingPanel from '@/app/component/explore_studios/BookingPanel';
+import StudioGallery from '@/app/component/explore_studios/StudioGallery';
+import BookingSection from '@/app/component/explore_studios/BookingSection';
 
 function hasValue(value: string | number | undefined): value is string | number {
      return value !== undefined && value !== null && String(value).trim() !== '';
@@ -75,11 +75,7 @@ async function StudioDetails({ params }: StudioPageProps) {
                     className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10"
                >
                     <div className="min-w-0 space-y-8 sm:space-y-10">
-                         <StudioImage
-                              key={studio.imageUrl || studio.image}
-                              src={studio.imageUrl || studio.image}
-                              title={studio.title}
-                         />
+                         <StudioGallery studio={studio} />
 
                          {specs.length > 0 && (
                               <dl className="grid grid-cols-2 gap-6 rounded-2xl bg-[#f3f0ee] p-5 sm:grid-cols-4 sm:p-6">
@@ -177,9 +173,11 @@ async function StudioDetails({ params }: StudioPageProps) {
                                    </div>
                               </section>
                          )}
+                         <section className="rounded-xl bg-white p-5"><h2 className="text-lg font-semibold">Your Host</h2><p className="mt-3 text-sm text-[#746b66]">{studio.ownerName || 'Host information has not been provided yet.'}</p></section>
+                         <section className="rounded-xl bg-white p-5"><h2 className="text-lg font-semibold">Reviews</h2>{studio.reviews?.length ? studio.reviews.map((review, index) => <article key={review._id || index} className="mt-4 border-t border-[#eee7e3] pt-4"><p className="font-medium">{review.name} &middot; {review.rating} / 5</p><p className="mt-2 text-sm text-[#746b66]">{review.comment}</p></article>) : <p className="mt-3 text-sm text-[#746b66]">No reviews yet.</p>}</section>
                     </div>
 
-                    <BookingPanel key={studio._id} studio={studio} />
+                    <BookingSection key={studio._id} studio={studio} />
                </div>
           </>
      );

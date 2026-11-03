@@ -3,10 +3,10 @@ import Sidebar from "@/app/component/layout/Sidebar";
 import { Suspense } from 'react';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { auth } from '@/app/libs/auth';
+import { getSession } from '@/app/libs/session';
 
 async function DashboardContent({ children }: DashboardLayoutProps) {
-     const session = await auth.api.getSession({ headers: await headers() });
+     const session = await getSession(await headers());
      if (!session) redirect('/login?callbackURL=%2Fdashboard%2Foverview');
      return (
           <div className="flex-1 bg-[#fcfaf9]">

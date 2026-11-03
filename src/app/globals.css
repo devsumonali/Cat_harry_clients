@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import "./theme.css";
 
 @theme inline {
      --font-sans: var(--font-inter), Arial, sans-serif;
