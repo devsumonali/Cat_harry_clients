@@ -84,7 +84,7 @@ const FeaturedStudios = () => {
                               {Array.from({ length: 4 }).map((_, index) => (
                                    <div
                                         key={index}
-                                        className="h-[295px] animate-pulse rounded-2xl bg-gray-200"
+                                        className="h-73.75 animate-pulse rounded-2xl bg-gray-200"
                                    />
                               ))}
                          </div>

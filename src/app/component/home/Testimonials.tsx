@@ -6,21 +6,21 @@ const testimonials = [
           quote: 'StudioSpace has completely transformed how our production agency scouts locations. We booked a pristine daylight loft in minutes for an international fashion campaign.',
           name: 'Elena Rostova',
           role: 'Creative Director, Vogue Studio',
-          image: '/images/testimonials/elena.jpg',
+          image: '/images/testimonials/elena.png',
      },
      {
           id: 2,
           quote: 'The soundstage quality and acoustic isolation we found through StudioSpace exceeded our expectations. Our podcast recordings have never sounded cleaner.',
           name: 'Marcus Vance',
           role: 'Host, Frequency Podcast',
-          image: '/images/testimonials/marcus.jpg',
+          image: '/images/testimonials/marcus.png',
      },
      {
           id: 3,
           quote: 'As a studio host, listing my soundstage on StudioSpace doubled my monthly bookings. The platform handles scheduling and payouts flawlessly.',
           name: 'Sarah Jenkins',
           role: 'Owner, Stage 4 LA',
-          image: '/images/testimonials/sarah.jpg',
+          image: '/images/testimonials/sarah.png',
      },
 ];
 

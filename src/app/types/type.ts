@@ -18,3 +18,17 @@ export type TStudio = {
      rating?: number;
      instantBook?: boolean;
 };
+
+export type TStudioDetails = TStudio & {
+     description?: string;
+     ceilingHeight?: number | string;
+     maxCapacity?: number | string;
+     powerSupply?: string;
+     amenities?: string[];
+     securityDeposit?: number | string;
+     minimumBookingHours?: number | string;
+     streetAddress?: string;
+     postalCode?: string;
+     overtimePolicy?: string;
+     houseRules?: string;
+};

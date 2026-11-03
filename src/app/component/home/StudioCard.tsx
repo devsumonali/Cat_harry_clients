@@ -22,7 +22,7 @@ const StudioCard = ({ studio }: StudioCardProps) => {
           <div className="rounded-2xl border border-[#f0ece9] bg-white p-3.5 transition-shadow duration-300 hover:shadow-lg">
                {/* Image */}
                <div className="relative h-40 overflow-hidden rounded-xl bg-[#eee9e5] sm:h-44">
-                    <Link href={`/studios/${studio._id}`} className="block h-full w-full">
+                    <Link href={`/explore_studios/${studio._id}`} className="block h-full w-full">
                          {imageUrl ? (
                               <Image
                                    src={imageUrl}
@@ -51,7 +51,7 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                <div className="pt-3">
                     <div className="flex items-center justify-between gap-2">
                          <Link
-                              href={`/studios/${studio._id}`}
+                              href={`/explore_studios/${studio._id}`}
                               className="min-w-0 truncate text-sm font-semibold text-[#171717] hover:text-[#D52B00]"
                          >
                               {studio.title}
@@ -76,7 +76,7 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                     <div className="my-3 border-t border-[#f0ece9]" />
 
                     {/* Rate */}
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                          <p className="text-sm font-semibold text-[#D52B00]">
                               {Number.isFinite(price)
                                    ? `$${price.toLocaleString()}`
@@ -91,6 +91,12 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                                    Instant Book
                               </span>
                          )}
+                         <Link
+                              href={`/explore_studios/${studio._id}`}
+                              className="rounded-full bg-[#f0eded] px-3 py-2 text-[10px] font-medium text-[#302825] transition hover:bg-[#D52B00] hover:text-white"
+                         >
+                              View More
+                         </Link>
                     </div>
                </div>
           </div>

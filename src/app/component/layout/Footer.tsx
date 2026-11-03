@@ -57,7 +57,7 @@ const socialLinks = [
 export default function Footer() {
      return (
           <footer className="w-full border-t border-[#EEEAE8] bg-[#FAF8F7] text-[#292524]">
-               <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     {/* Main Footer */}
                     <div className="grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.8fr_0.85fr_0.85fr_0.85fr] lg:gap-12 lg:py-16">
                          {/* Brand */}
@@ -69,7 +69,7 @@ export default function Footer() {
                                    StudioSpace
                               </Link>
 
-                              <p className="mt-4 max-w-[290px] text-[13px] leading-[1.8] text-[#57534E]">
+                              <p className="mt-4 max-w-72.5 text-[13px] leading-[1.8] text-[#57534E]">
                                    The premier marketplace connecting world-class creators,
                                    photographers, and filmmakers with extraordinary production
                                    spaces.
@@ -130,7 +130,7 @@ export default function Footer() {
 
                {/* Bottom Footer */}
                <div className="border-t border-[#EEEAE8]">
-                    <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
+                    <div className="mx-auto flex max-w-300 flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
                          <p className="text-center text-[11px] text-[#57534E] md:text-left">
                               © {new Date().getFullYear()} StudioSpace Marketplace Inc. All rights
                               reserved.

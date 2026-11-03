@@ -1,8 +1,6 @@
-'use client';
-
-import { TCategory } from '@/app/types/type';
+import { getCategories } from '@/app/libs/api';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { FiArrowUpRight } from 'react-icons/fi';
 import CategoryCard from './CategoryCard';
 
@@ -14,32 +12,28 @@ const categoryImages: Record<string, string> = {
      industrial: '/images/home/category-industrial.png',
 };
 
+async function CategoryGrid() {
+     const categories = await getCategories().catch((error: unknown) => {
+          console.error('Category fetch error:', error);
+          return [];
+     });
+
+     return categories.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+               {categories.slice(0, 5).map((category) => (
+                    <CategoryCard
+                         key={category._id}
+                         category={category}
+                         image={categoryImages[category.slug] || '/images/home/category-daylight.png'}
+                    />
+               ))}
+          </div>
+     ) : (
+          <p className="py-10 text-center text-sm text-gray-500">No categories found.</p>
+     );
+}
+
 const Category = () => {
-     const [categories, setCategories] = useState<TCategory[]>([]);
-     const [loading, setLoading] = useState(true);
-
-     useEffect(() => {
-          const getCategories = async () => {
-               try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
-
-                    if (!response.ok) {
-                         throw new Error('Failed to fetch categories');
-                    }
-
-                    const result = await response.json();
-
-                    setCategories(Array.isArray(result) ? result : result.data || []);
-               } catch (error) {
-                    console.error('Category fetch error:', error);
-               } finally {
-                    setLoading(false);
-               }
-          };
-
-          getCategories();
-     }, []);
-
      return (
           <section className="bg-[#faf8f7] py-16 md:py-20">
                <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
@@ -65,7 +59,7 @@ const Category = () => {
                     </div>
 
                     {/* Category Grid */}
-                    {loading ? (
+                    <Suspense fallback={(
                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                               {Array.from({ length: 5 }).map((_, index) => (
                                    <div
@@ -74,24 +68,9 @@ const Category = () => {
                                    />
                               ))}
                          </div>
-                    ) : categories.length > 0 ? (
-                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-                              {categories.slice(0, 5).map((category) => (
-                                   <CategoryCard
-                                        key={category._id}
-                                        category={category}
-                                        image={
-                                             categoryImages[category.slug] ||
-                                             '/images/home/category-daylight.png'
-                                        }
-                                   />
-                              ))}
-                         </div>
-                    ) : (
-                         <p className="py-10 text-center text-sm text-gray-500">
-                              No categories found.
-                         </p>
-                    )}
+                    )}>
+                         <CategoryGrid />
+                    </Suspense>
                </div>
           </section>
      );
