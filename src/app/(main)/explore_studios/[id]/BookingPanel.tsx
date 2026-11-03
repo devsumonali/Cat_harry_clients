@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 import { createBooking } from '@/app/libs/api';
 import type { BookingPanelProps } from '@/app/types/type';
+import { authClient } from '@/app/libs/auth-client';
+import { useRouter } from 'next/navigation';
 
 const money = (value: number) => new Intl.NumberFormat('en-US', {
      style: 'currency', currency: 'USD', maximumFractionDigits: 2,
@@ -16,6 +18,8 @@ function minutes(time: string) {
 }
 
 export default function BookingPanel({ studio }: BookingPanelProps) {
+     const router = useRouter();
+     const { data: session, isPending: sessionPending } = authClient.useSession();
      const minimumHours = Number(studio.minimumBookingHours) || 1;
      const capacity = Number(studio.maxCapacity) || undefined;
      const rate = Number(studio.hourlyRate);
@@ -35,6 +39,12 @@ export default function BookingPanel({ studio }: BookingPanelProps) {
      async function handleSubmit(event: FormEvent<HTMLFormElement>) {
           event.preventDefault();
           if (requestInFlight.current) return;
+          if (sessionPending) return;
+          if (!session) {
+               toast.error('Please log in to request a booking.');
+               router.push(`/login?callbackURL=${encodeURIComponent(`/explore_studios/${studio._id}`)}`);
+               return;
+          }
           if (!bookingDate || !startTime || !endTime) {
                toast.error('Select a booking date, start time and end time.');
                return;

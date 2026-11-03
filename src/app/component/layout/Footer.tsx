@@ -54,7 +54,8 @@ const socialLinks = [
      },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+     'use cache';
      return (
           <footer className="w-full border-t border-[#EEEAE8] bg-[#FAF8F7] text-[#292524]">
                <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">

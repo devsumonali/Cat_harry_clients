@@ -1,4 +1,9 @@
 import type { ElementType, ReactNode } from 'react';
+import type { MongoClient } from 'mongodb';
+
+export interface AuthMongoGlobal {
+     authMongoClient?: MongoClient;
+}
 
 export interface TCategory {
      _id: string;
