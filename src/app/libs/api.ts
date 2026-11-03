@@ -28,9 +28,8 @@ export async function getStudioById(id: string): Promise<TStudioDetails | null> 
 }
 
 export async function createBooking(booking: BookingRequest): Promise<BookingResponse> {
-     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/booking`, {
           method: 'POST',
-          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(booking),
      });

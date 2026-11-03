@@ -122,13 +122,24 @@ export interface BookingPanelProps {
 
 export interface BookingRequest {
      studioId: string;
+     studioTitle: string;
+     userId: string;
+     userName: string;
+     userEmail: string;
      bookingDate: string;
      startTime: string;
      endTime: string;
      guestCount: number;
+     hourlyRate: number;
+     totalHours: number;
+     securityDeposit: number;
+     totalAmount: number;
+     status: 'pending';
+     createdAt: string;
 }
 
 export interface BookingResponse {
+     acknowledged?: boolean;
      insertedId?: string;
      message?: string;
 }
@@ -139,4 +150,41 @@ export interface CategoryRouteParams {
 
 export interface CategoryPageProps {
      params: Promise<CategoryRouteParams>;
+}
+
+export interface DashboardStudio extends TStudioDetails {
+     ownerId?: string;
+     ownerName?: string;
+}
+
+export interface DashboardBooking extends Omit<BookingRequest, 'status'> {
+     _id: string;
+     status: 'pending' | 'confirmed' | 'cancelled' | 'rejected';
+}
+
+export interface DashboardMessage {
+     _id: string;
+     studioId: string;
+     studioTitle: string;
+     senderId: string;
+     senderName: string;
+     recipientId: string;
+     recipientName: string;
+     text: string;
+     createdAt: string;
+     read: boolean;
+}
+
+export interface DashboardData {
+     userId: string;
+     studios: DashboardStudio[];
+     availableStudios: DashboardStudio[];
+     bookings: DashboardBooking[];
+     incomingBookings: DashboardBooking[];
+     savedSpaces: DashboardStudio[];
+     messages: DashboardMessage[];
+}
+
+export interface DashboardViewProps {
+     section: 'overview' | 'my_bookings' | 'saved_spaces' | 'messages';
 }

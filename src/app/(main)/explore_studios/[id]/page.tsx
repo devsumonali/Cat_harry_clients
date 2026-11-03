@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { FiArrowLeft, FiCheck, FiClock, FiMapPin, FiShield } from 'react-icons/fi';
 import StudioImage from './StudioImage';
-import BookingPanel from './BookingPanel';
+import BookingPanel from '@/app/component/explore_studios/BookingPanel';
 
 function hasValue(value: string | number | undefined): value is string | number {
      return value !== undefined && value !== null && String(value).trim() !== '';

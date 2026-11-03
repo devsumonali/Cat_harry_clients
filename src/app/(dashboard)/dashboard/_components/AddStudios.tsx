@@ -1,6 +1,9 @@
 'use client';
 import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { publishStudio } from '../actions';
+import { getCategories } from '@/app/libs/api';
 import { FiDollarSign, FiGrid, FiInfo, FiMapPin, FiZap } from 'react-icons/fi';
 import {
      LuBuilding2,
@@ -49,41 +52,38 @@ function SectionHeading({
 
 const AddStudios = () => {
      const [categories, setCategories] = useState<TCategory[]>([]);
+     const [submitting, setSubmitting] = useState(false);
+     const inFlight = useRef(false);
+     const router = useRouter();
 
      useEffect(() => {
-          const getCategories = async () => {
-               const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
-
-               const data = await response.json();
-               setCategories(data);
-          };
-
-          getCategories();
+          let active = true;
+          getCategories().then((data) => { if (active) setCategories(data); })
+               .catch(() => { if (active) toast.error('Unable to load categories. Please refresh the page.'); });
+          return () => { active = false; };
      }, []);
 
      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault();
+          if (inFlight.current) return;
           const form = e.currentTarget;
           const formData = new FormData(form);
-          const studios = {
-               ...Object.fromEntries(formData.entries()),
-               amenities: formData.getAll('amenities'),
-          };
-          const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, {
-               method: 'POST',
-               credentials: 'include',
-               headers: {
-                    'Content-Type': 'application/json',
-               },
-               body: JSON.stringify(studios),
-          });
-          const data = await result.json();
-
-          if (data.acknowledged || data.success) {
+          inFlight.current = true;
+          setSubmitting(true);
+          try {
+               const result = await publishStudio(formData);
+               if (result.unauthorized) {
+                    router.push('/login?callbackURL=%2Fdashboard%2Fadd_studios');
+               }
+               if (result.error) { toast.error(result.error); return; }
                toast.success('Studio added successfully!');
                form.reset();
-          } else {
-               toast.error('Failed to add studio!');
+               router.refresh();
+          } catch {
+               toast.error('Failed to add studio. Please try again.');
+          } finally {
+               inFlight.current = false;
+               setSubmitting(false);
           }
      };
      return (
@@ -116,9 +116,10 @@ const AddStudios = () => {
                                    <button
                                         type="submit"
                                         form="studio-form"
+                                        disabled={submitting}
                                         className="rounded-full cursor-pointer bg-[#ba310f] px-6 py-3 text-xs font-semibold text-white shadow-md shadow-orange-900/15 transition hover:bg-[#922508]"
                                    >
-                                        Publish Studio
+                                        {submitting ? 'Publishing…' : 'Publish Studio'}
                                    </button>
                               </div>
                          </div>

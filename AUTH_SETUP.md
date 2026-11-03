@@ -39,6 +39,8 @@ Better Auth stores users, accounts and sessions in MongoDB. Passwords are hashed
 
 ## Required Express integration
 
+The booking form posts to `/api/studios/booking`, matching the supplied insert endpoint. It sends studio/user details, date/time, guests, hourly rate, duration, deposit, total, `pending` status and creation time. This public endpoint currently receives no session cookie, so it works with the supplied `cors()` middleware. Before protecting this endpoint, enable credential-aware CORS below and add `credentials: 'include'` to `createBooking`. Verify the session and calculate prices from the studio on the backend; client-supplied identity and totals are not trusted authorization or payment data.
+
 The provided Express server was pasted into chat and is not in this repository. Its mutations are still public until you add authorization there. Next.js page protection alone does not protect Express endpoints.
 
 Replace `app.use(cors())` with a credential-aware allowlist:
