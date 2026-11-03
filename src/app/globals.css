@@ -1,1 +1,58 @@
 @import 'tailwindcss';
+
+@theme inline {
+     --font-sans: var(--font-inter), Arial, sans-serif;
+}
+
+/* Hero Swiper */
+.studio-hero-swiper {
+     width: 100%;
+}
+
+.studio-hero-swiper .swiper-button-next,
+.studio-hero-swiper .swiper-button-prev {
+     width: 44px;
+     height: 44px;
+     border-radius: 50%;
+     background: rgba(255, 255, 255, 0.15);
+     color: white;
+     backdrop-filter: blur(8px);
+     transition: all 0.3s ease;
+}
+
+.studio-hero-swiper .swiper-button-next:hover,
+.studio-hero-swiper .swiper-button-prev:hover {
+     background: #d52b00;
+}
+
+.studio-hero-swiper .swiper-button-next::after,
+.studio-hero-swiper .swiper-button-prev::after {
+     font-size: 15px;
+     font-weight: bold;
+}
+
+.studio-hero-swiper .swiper-pagination {
+     bottom: 25px !important;
+}
+
+.studio-hero-swiper .swiper-pagination-bullet {
+     width: 9px;
+     height: 9px;
+     background: #ffffff;
+     opacity: 0.6;
+     transition: all 0.3s ease;
+}
+
+.studio-hero-swiper .swiper-pagination-bullet-active {
+     width: 28px;
+     border-radius: 6px;
+     background: #d52b00;
+     opacity: 1;
+}
+
+@media (max-width: 767px) {
+     .studio-hero-swiper .swiper-button-next,
+     .studio-hero-swiper .swiper-button-prev {
+          display: none;
+     }
+}

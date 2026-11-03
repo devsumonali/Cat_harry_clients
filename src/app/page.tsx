@@ -1,6 +1,9 @@
+import HeroSlider from "./component/home/Hero";
 
 export default function Home() {
   return (
-    <div>Home page</div>
+    <main>
+     <HeroSlider/>
+    </main>
   );
 }
