@@ -1,24 +1,14 @@
+import type { StudioPageProps } from '@/app/types/type';
 import { getStudioById } from '@/app/libs/api';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { FiArrowLeft, FiCheck, FiClock, FiMapPin, FiShield } from 'react-icons/fi';
 import StudioImage from './StudioImage';
-
-type StudioPageProps = { params: Promise<{ id: string }> };
+import BookingPanel from './BookingPanel';
 
 function hasValue(value: string | number | undefined): value is string | number {
      return value !== undefined && value !== null && String(value).trim() !== '';
-}
-
-function formatPrice(value: string | number | undefined) {
-     if (!hasValue(value) || !Number.isFinite(Number(value)) || Number(value) < 0) return null;
-     return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          maximumFractionDigits: 2,
-          minimumFractionDigits: 0,
-     }).format(Number(value));
 }
 
 async function StudioDetails({ params }: StudioPageProps) {
@@ -46,8 +36,6 @@ async function StudioDetails({ params }: StudioPageProps) {
      const address = [studio.streetAddress, studio.city, studio.postalCode]
           .filter(Boolean)
           .join(', ');
-     const hourlyRate = formatPrice(studio.hourlyRate);
-     const deposit = formatPrice(studio.securityDeposit);
      const specs = [
           { label: 'Area', value: studio.squareFootage, unit: 'sq ft' },
           { label: 'Ceiling height', value: studio.ceilingHeight, unit: 'feet' },
@@ -58,7 +46,6 @@ async function StudioDetails({ params }: StudioPageProps) {
           { title: 'Overtime Policy', text: studio.overtimePolicy, icon: FiClock },
           { title: 'House Rules', text: studio.houseRules, icon: FiShield },
      ].filter((item) => item.text);
-     const showPricing = hourlyRate || deposit || hasValue(studio.minimumBookingHours);
 
      return (
           <>
@@ -85,7 +72,7 @@ async function StudioDetails({ params }: StudioPageProps) {
                </header>
 
                <div
-                    className={`grid items-start gap-8 lg:gap-10 ${showPricing ? 'lg:grid-cols-[minmax(0,1fr)_320px]' : ''}`}
+                    className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10"
                >
                     <div className="min-w-0 space-y-8 sm:space-y-10">
                          <StudioImage
@@ -192,42 +179,7 @@ async function StudioDetails({ params }: StudioPageProps) {
                          )}
                     </div>
 
-                    {showPricing && (
-                         <aside
-                              aria-label="Studio pricing"
-                              className="min-w-0 rounded-2xl border border-[#f0eae5] bg-white p-6 shadow-lg shadow-[#382619]/5 lg:sticky lg:top-24 lg:p-7"
-                         >
-                              <h2 className="text-xs font-semibold uppercase tracking-wider text-[#8b7b71]">
-                                   Rates & Booking Minimum
-                              </h2>
-                              {hourlyRate && (
-                                   <p className="mt-5 text-3xl font-bold text-[#c63717]">
-                                        {hourlyRate}
-                                        <span className="ml-1.5 text-sm font-normal text-[#746b66]">
-                                             / hour
-                                        </span>
-                                   </p>
-                              )}
-                              <dl className="mt-6 space-y-5 border-t border-[#f0eae5] pt-6 text-sm">
-                                   {hasValue(studio.minimumBookingHours) && (
-                                        <div className="flex items-start justify-between gap-4">
-                                             <dt className="text-[#746b66]">Minimum booking</dt>
-                                             <dd className="wrap-break-word text-right font-semibold text-[#282322]">
-                                                  {studio.minimumBookingHours} hours
-                                             </dd>
-                                        </div>
-                                   )}
-                                   {deposit && (
-                                        <div className="flex items-start justify-between gap-4">
-                                             <dt className="text-[#746b66]">Security deposit</dt>
-                                             <dd className="text-right font-semibold text-[#282322]">
-                                                  {deposit}
-                                             </dd>
-                                        </div>
-                                   )}
-                              </dl>
-                         </aside>
-                    )}
+                    <BookingPanel key={studio._id} studio={studio} />
                </div>
           </>
      );

@@ -9,7 +9,7 @@ import {
      LuSlidersHorizontal,
      LuWarehouse,
 } from 'react-icons/lu';
-import { TCategory } from '@/app/types/type';
+import type { TCategory, SectionHeadingProps } from '@/app/types/type';
 
 const amenities = [
      'U-Shaped Cyclorama Wall',
@@ -32,11 +32,7 @@ function SectionHeading({
      icon: Icon,
      title,
      description,
-}: {
-     icon: React.ElementType;
-     title: string;
-     description: string;
-}) {
+}: SectionHeadingProps) {
      return (
           <div className="mb-7 flex items-center gap-3">
                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fff0e9] text-[#c63717]">

@@ -5,7 +5,7 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
-import { TStudio } from '@/app/types/type';
+import type { TStudio } from '@/app/types/type';
 import StudioCard from './StudioCard';
 
 const FeaturedStudios = () => {

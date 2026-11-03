@@ -1,10 +1,12 @@
 'use client';
 
+import type { StudioImageProps } from '@/app/types/type';
+
 import Image from 'next/image';
 import { useState } from 'react';
 import { FiImage } from 'react-icons/fi';
 
-export default function StudioImage({ src, title }: { src?: string; title: string }) {
+export default function StudioImage({ src, title }: StudioImageProps) {
      const [failed, setFailed] = useState(false);
      const validSource = src && (/^https?:\/\//i.test(src) || /^\/(?!\/)/.test(src));
 

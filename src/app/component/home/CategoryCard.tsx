@@ -1,16 +1,11 @@
-import { TCategory } from '@/app/types/type';
+import type { CategoryCardProps } from '@/app/types/type';
 import Image from 'next/image';
 import Link from 'next/link';
-
-type CategoryCardProps = {
-     category: TCategory;
-     image: string;
-};
 
 const CategoryCard = ({ category, image }: CategoryCardProps) => {
      return (
           <Link
-               href={`/studios?category=${encodeURIComponent(category.slug)}`}
+               href={`/category/${encodeURIComponent(category.slug)}`}
                className="group relative block h-61.25 overflow-hidden rounded-xl bg-[#292929] md:h-67.5"
           >
                {/* Static Background Image */}

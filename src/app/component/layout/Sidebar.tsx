@@ -1,5 +1,7 @@
 'use client';
 
+import type { SidebarProps } from '@/app/types/type';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -20,13 +22,6 @@ const menuItems = [
      { label: 'Settings', href: '/dashboard/settings', icon: FiSettings },
      { label: 'Add Studios', href: '/dashboard/add_studios', icon: FiSettings },
 ];
-
-type SidebarProps = {
-     name?: string;
-     role?: string;
-     bookingCount?: number;
-     hasUnreadMessages?: boolean;
-};
 
 export default function Sidebar({
      name = 'Alex Rivers',

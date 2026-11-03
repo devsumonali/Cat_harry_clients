@@ -1,3 +1,5 @@
+import { getCategories } from '@/app/libs/api';
+import type { TExploreStudio, ExploreStudiosPageProps, ExploreStudioCardProps, FilterSidebarProps } from '@/app/types/type';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -5,55 +7,15 @@ import {
      FiChevronRight,
      FiHeart,
      FiMapPin,
-     FiSearch,
      FiStar,
      FiX,
      FiZap,
 } from 'react-icons/fi';
 
-type TStudio = {
-     _id: string;
-     title: string;
-     category: string;
-     city?: string;
-     streetAddress?: string;
-     imageUrl?: string;
-     image?: string;
-     images?: string[];
-     squareFootage?: number | string;
-     hourlyRate?: number | string;
-     rating?: number;
-     instantBook?: boolean;
-     isFeatured?: boolean;
-};
-
-type PageProps = {
-     searchParams: Promise<{
-          category?: string;
-          page?: string;
-     }>;
-};
-
-const filterCategories = [
-     { label: 'Photo Studio', slug: 'daylight-loft' },
-     { label: 'Video & Film Stage', slug: 'cyc-wall' },
-     { label: 'Sound Recording', slug: 'soundstage' },
-     { label: 'Podcast Lounge', slug: 'podcast-lounge' },
-     { label: 'Art Gallery Loft', slug: 'industrial' },
-];
-
-const filterAmenities = [
-     'Cyclorama Wall',
-     'Freight Elevator',
-     'Natural Light',
-     'Soundproof Studio',
-     'Makeup & Dressing Room',
-];
-
 const PER_PAGE = 6;
 
 // Studio Card
-const ExploreStudioCard = ({ studio }: { studio: TStudio }) => {
+const ExploreStudioCard = ({ studio }: ExploreStudioCardProps) => {
      const imageSrc = studio.imageUrl || studio.image || studio.images?.[0];
 
      const price = Number(studio.hourlyRate);
@@ -159,133 +121,51 @@ const ExploreStudioCard = ({ studio }: { studio: TStudio }) => {
      );
 };
 
-// Static Filter Sidebar
-const FilterSidebar = ({ category }: { category?: string }) => {
+const FilterSidebar = ({ categories, amenities, selectedCategories, selectedAmenities, maxPrice }: FilterSidebarProps) => {
      return (
           <aside className="h-fit rounded-xl border border-[#f0ecea] bg-white p-5 lg:sticky lg:top-24">
-               <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-base font-bold text-[#171717]">Filters</h2>
-
-                    <Link href="/studios" className="text-xs font-medium text-[#D52B00]">
-                         Reset
-                    </Link>
-               </div>
-
-               {/* Category */}
-               <div className="mb-7">
-                    <h3 className="mb-3 text-xs font-semibold text-[#292321]">Category</h3>
-
-                    <div className="space-y-2.5">
-                         {filterCategories.map((item) => (
-                              <label
-                                   key={item.slug}
-                                   className="flex cursor-pointer items-center gap-2.5 text-xs text-[#68615e]"
-                              >
-                                   <input
-                                        type="checkbox"
-                                        defaultChecked={category === item.slug}
-                                        className="h-3.5 w-3.5 accent-[#D52B00]"
-                                   />
-                                   {item.label}
-                              </label>
-                         ))}
+               <form id="studio-filters" action="/explore_studios" method="get">
+                    <div className="mb-6 flex items-center justify-between">
+                         <h2 className="text-base font-bold text-[#171717]">Filters</h2>
+                         <Link href="/explore_studios" className="text-xs font-medium text-[#D52B00]">Reset</Link>
                     </div>
-               </div>
-
-               {/* Price Range */}
-               <div className="mb-7">
-                    <div className="mb-3 flex items-center justify-between gap-2">
-                         <h3 className="text-xs font-semibold text-[#292321]">Price Range</h3>
-                         <span className="text-[10px] font-medium text-[#D52B00]">
-                              $0 - $250+/hr
-                         </span>
+                    <fieldset className="mb-7">
+                         <legend className="mb-3 text-xs font-semibold text-[#292321]">Category</legend>
+                         <div className="space-y-2.5">
+                              {categories.map((item) => (
+                                   <label key={item.slug} className="flex cursor-pointer items-center gap-2.5 text-xs text-[#68615e]">
+                                        <input type="checkbox" name="category" value={item.slug} defaultChecked={selectedCategories.includes(item.slug)} className="h-3.5 w-3.5 accent-[#D52B00]" />
+                                        {item.name}
+                                   </label>
+                              ))}
+                         </div>
+                    </fieldset>
+                    <div className="mb-7">
+                         <label htmlFor="max-price" className="mb-3 block text-xs font-semibold text-[#292321]">Maximum Price / Hour</label>
+                         <input id="max-price" type="number" name="maxPrice" min="0" step="any" defaultValue={maxPrice || ''} placeholder="No maximum" className="w-full rounded-lg border border-[#eee9e5] bg-[#f7f5f4] px-3 py-2.5 text-xs outline-none focus:border-[#D52B00]" />
                     </div>
-
-                    <input
-                         type="range"
-                         min="0"
-                         max="500"
-                         defaultValue="250"
-                         className="w-full accent-[#D52B00]"
-                    />
-
-                    <div className="mt-2 flex justify-between text-[10px] text-[#8c8580]">
-                         <span>$0/hr</span>
-                         <span>$500+/hr</span>
-                    </div>
-               </div>
-
-               {/* Location */}
-               <div className="mb-7">
-                    <h3 className="mb-3 text-xs font-semibold text-[#292321]">Location</h3>
-
-                    <div className="flex items-center gap-2 rounded-lg bg-[#f7f5f4] px-3 py-2.5">
-                         <FiSearch size={14} className="shrink-0 text-[#8c8580]" />
-                         <input
-                              type="text"
-                              placeholder="Neighborhood or City..."
-                              className="w-full min-w-0 bg-transparent text-xs outline-none placeholder:text-[#a39a95]"
-                         />
-                    </div>
-               </div>
-
-               {/* Minimum Rating */}
-               <div className="mb-7">
-                    <h3 className="mb-3 text-xs font-semibold text-[#292321]">Minimum Rating</h3>
-
-                    <div className="space-y-2">
-                         {[4.95, 4.5].map((rating) => (
-                              <label
-                                   key={rating}
-                                   className="flex cursor-pointer items-center gap-2 text-xs text-[#554e4a]"
-                              >
-                                   <input type="radio" name="rating" className="accent-[#D52B00]" />
-
-                                   <span className="text-[#f59e0b]">★★★★★</span>
-
-                                   <span className="text-[10px]">{rating} & above</span>
-                              </label>
-                         ))}
-                    </div>
-               </div>
-
-               {/* Amenities */}
-               <div className="mb-6">
-                    <h3 className="mb-3 text-xs font-semibold text-[#292321]">
-                         Amenities & Features
-                    </h3>
-
-                    <div className="space-y-2.5">
-                         {filterAmenities.map((amenity) => (
-                              <label
-                                   key={amenity}
-                                   className="flex cursor-pointer items-center gap-2.5 text-xs text-[#68615e]"
-                              >
-                                   <input
-                                        type="checkbox"
-                                        className="h-3.5 w-3.5 accent-[#D52B00]"
-                                   />
-                                   {amenity}
-                              </label>
-                         ))}
-                    </div>
-               </div>
-
-               {/* Static UI Button */}
-               <button
-                    type="button"
-                    disabled
-                    title="Dynamic filters will be added later"
-                    className="w-full cursor-not-allowed rounded-full bg-[#b52e00] px-4 py-3 text-xs font-semibold text-white opacity-80"
-               >
-                    Apply Filters
-               </button>
+                    <fieldset className="mb-6">
+                         <legend className="mb-3 text-xs font-semibold text-[#292321]">Amenities & Features</legend>
+                         <div className="space-y-2.5">
+                              {amenities.map((amenity) => (
+                                   <label key={amenity} className="flex cursor-pointer items-center gap-2.5 text-xs text-[#68615e]">
+                                        <input type="checkbox" name="amenities" value={amenity} defaultChecked={selectedAmenities.includes(amenity)} className="h-3.5 w-3.5 shrink-0 accent-[#D52B00]" />
+                                        {amenity}
+                                   </label>
+                              ))}
+                         </div>
+                    </fieldset>
+                    <button type="submit" className="w-full cursor-pointer rounded-full bg-[#b52e00] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#922508]">Apply Filters</button>
+               </form>
           </aside>
      );
 };
 
-const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
-     const { category, page } = await searchParams;
+const ExploreStudiosPage = async ({ searchParams }: ExploreStudiosPageProps) => {
+     const { category, amenities, maxPrice, sort = 'all', page } = await searchParams;
+     const selectedCategories = category ? (Array.isArray(category) ? category : [category]) : [];
+     const selectedAmenities = amenities ? (Array.isArray(amenities) ? amenities : [amenities]) : [];
+     const categories = await getCategories();
 
      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, {
           cache: 'no-store',
@@ -293,17 +173,39 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
 
      const result = response.ok ? await response.json() : [];
 
-     const allStudios: TStudio[] = Array.isArray(result)
+     const allStudios: TExploreStudio[] = Array.isArray(result)
           ? result
           : Array.isArray(result.data)
             ? result.data
             : [];
 
-     // Category link filtering works now.
-     // Sidebar filters are UI-only for now.
-     const studios = category
-          ? allStudios.filter((studio) => studio.category === category)
-          : allStudios;
+     const filterAmenities = [...new Set(allStudios.flatMap((studio) => studio.amenities || []))];
+     const studios = allStudios.filter((studio) => {
+          const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(studio.category);
+          const matchesPrice = !maxPrice || Number(studio.hourlyRate) <= Number(maxPrice);
+          const matchesAmenities = selectedAmenities.every((amenity) => studio.amenities?.includes(amenity));
+          return matchesCategory && matchesPrice && matchesAmenities;
+     });
+
+     if (sort === 'low') studios.sort((a, b) => Number(a.hourlyRate) - Number(b.hourlyRate));
+     if (sort === 'high') studios.sort((a, b) => Number(b.hourlyRate) - Number(a.hourlyRate));
+
+     const filterParams = new URLSearchParams();
+     selectedCategories.forEach((value) => filterParams.append('category', value));
+     selectedAmenities.forEach((value) => filterParams.append('amenities', value));
+     if (maxPrice) filterParams.set('maxPrice', maxPrice);
+     if (sort !== 'all') filterParams.set('sort', sort);
+
+     const activeFilters = [
+          ...selectedCategories.map((value) => ({ key: 'category', value, label: categories.find((item) => item.slug === value)?.name || value })),
+          ...selectedAmenities.map((value) => ({ key: 'amenities', value, label: value })),
+          ...(maxPrice ? [{ key: 'maxPrice', value: maxPrice, label: 'Up to $' + maxPrice + '/hr' }] : []),
+     ];
+     const removeFilterUrl = (key: string, value: string) => {
+          const params = new URLSearchParams(filterParams);
+          params.delete(key, value);
+          return '/explore_studios?' + params.toString();
+     };
 
      const totalStudios = studios.length;
      const totalPages = Math.max(1, Math.ceil(totalStudios / PER_PAGE));
@@ -319,15 +221,9 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
      const visibleStudios = studios.slice(startIndex, startIndex + PER_PAGE);
 
      const createPageUrl = (pageNumber: number) => {
-          const params = new URLSearchParams();
-
-          if (category) {
-               params.set('category', category);
-          }
-
+          const params = new URLSearchParams(filterParams);
           params.set('page', String(pageNumber));
-
-          return `/studios?${params.toString()}`;
+          return '/explore_studios?' + params.toString();
      };
 
      return (
@@ -340,31 +236,15 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
                                    Active Filters
                               </span>
 
-                              {category ? (
-                                   <Link
-                                        href="/studios"
-                                        className="inline-flex items-center gap-1 rounded-full bg-[#f0eded] px-3 py-1.5 text-[11px] text-[#302825]"
-                                   >
-                                        {category
-                                             .split('-')
-                                             .map(
-                                                  (word) =>
-                                                       word.charAt(0).toUpperCase() + word.slice(1),
-                                             )
-                                             .join(' ')}
-                                        <FiX size={12} />
+                              {activeFilters.map((filter) => (
+                                   <Link key={filter.key + filter.value} href={removeFilterUrl(filter.key, filter.value)} aria-label={'Remove ' + filter.label + ' filter'} className="inline-flex items-center gap-1 rounded-full bg-[#f0eded] px-3 py-1.5 text-[11px] text-[#302825]">
+                                        {filter.label}<FiX size={12} />
                                    </Link>
+                              ))}
+                              {activeFilters.length === 0 ? (
+                                   <span className="text-xs text-[#8c8580]">All Studios</span>
                               ) : (
-                                   <span className="text-xs text-[#8c8580]">All Categories</span>
-                              )}
-
-                              {category && (
-                                   <Link
-                                        href="/studios"
-                                        className="ml-2 text-xs font-medium text-[#D52B00]"
-                                   >
-                                        Clear all
-                                   </Link>
+                                   <Link href="/explore_studios" className="ml-2 text-xs font-medium text-[#D52B00]">Clear all</Link>
                               )}
                          </div>
 
@@ -373,14 +253,16 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
                                    Showing {totalStudios} studios
                               </span>
 
-                              {/* Static Sorting UI */}
+                              {/* Applied with the sidebar filters */}
                               <select
-                                   defaultValue="top"
-                                   disabled
+                                   key={sort}
+                                   name="sort"
+                                   form="studio-filters"
+                                   defaultValue={sort}
                                    aria-label="Sort studios"
                                    className="rounded-lg bg-transparent text-xs text-[#302825] outline-none disabled:opacity-70"
                               >
-                                   <option value="top">Top Rated</option>
+                                   <option value="all">Default Order</option>
                                    <option value="low">Price: Low to High</option>
                                    <option value="high">Price: High to Low</option>
                               </select>
@@ -389,7 +271,7 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
 
                     {/* Sidebar + Studio Cards */}
                     <div className="grid grid-cols-1 items-start gap-6 py-8 lg:grid-cols-[245px_minmax(0,1fr)]">
-                         <FilterSidebar category={category} />
+                         <FilterSidebar key={filterParams.toString()} categories={categories} amenities={filterAmenities} selectedCategories={selectedCategories} selectedAmenities={selectedAmenities} maxPrice={maxPrice} />
 
                          <div>
                               {visibleStudios.length > 0 ? (
@@ -403,11 +285,11 @@ const ExploreStudiosPage = async ({ searchParams }: PageProps) => {
                                         <h2 className="text-lg font-semibold">No Studios Found</h2>
 
                                         <p className="mt-2 text-sm text-gray-500">
-                                             No studios available in this category.
+                                             No studios match your selected filters.
                                         </p>
 
                                         <Link
-                                             href="/studios"
+                                             href="/explore_studios"
                                              className="mt-5 inline-block text-sm font-medium text-[#D52B00]"
                                         >
                                              Explore All Studios

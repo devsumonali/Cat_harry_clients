@@ -1,13 +1,9 @@
 'use client';
 
-import { TStudio } from '@/app/types/type';
+import type { StudioCardProps } from '@/app/types/type';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiStar } from 'react-icons/fi';
-
-type StudioCardProps = {
-     studio: TStudio;
-};
 
 const StudioCard = ({ studio }: StudioCardProps) => {
      const imageUrl = studio.imageUrl || studio.image;
