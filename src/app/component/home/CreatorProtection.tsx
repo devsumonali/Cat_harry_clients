@@ -5,7 +5,7 @@ import { FiShield } from 'react-icons/fi';
 const CreatorProtection = () => {
      return (
           <section className="bg-[#faf8f7] py-12 md:py-16">
-               <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     <div className="grid grid-cols-1 items-center gap-10 rounded-2xl bg-white px-6 py-10 sm:px-10 md:grid-cols-2 md:gap-12 md:py-12 lg:px-14">
                          {/* Left Content */}
                          <div>

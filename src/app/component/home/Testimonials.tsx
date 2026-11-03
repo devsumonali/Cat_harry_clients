@@ -27,7 +27,7 @@ const testimonials = [
 const Testimonials = () => {
      return (
           <section className="bg-[#faf8f7] py-14 md:py-20">
-               <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     {/* Section Header */}
                     <div className="mb-10 text-center">
                          <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#D52B00]">
@@ -40,7 +40,7 @@ const Testimonials = () => {
                     </div>
 
                     {/* Testimonial Cards */}
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                          {testimonials.map((testimonial) => (
                               <div
                                    key={testimonial.id}

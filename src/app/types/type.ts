@@ -1,9 +1,9 @@
 export type TCategory = {
-     spacesCount: any;
      _id: string;
      name: string;
      slug: string;
      icon: string;
+     spacesCount?: number;
 };
 
 export type TStudio = {

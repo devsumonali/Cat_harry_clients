@@ -43,9 +43,9 @@ const FeaturedStudios = () => {
 
      return (
           <section className="bg-[#faf8f7] py-16 md:py-20">
-               <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     {/* Header */}
-                    <div className="mb-7 flex items-end justify-between gap-4">
+                    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
                          <div>
                               <p className="mb-2 text-xs font-medium uppercase tracking-[0.12em] text-[#D52B00]">
                                    Handpicked

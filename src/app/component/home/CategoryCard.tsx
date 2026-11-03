@@ -18,7 +18,7 @@ const CategoryCard = ({ category, image }: CategoryCardProps) => {
                     src={image}
                     alt={category.name}
                     fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    sizes="(max-width: 639px) calc(100vw - 32px), (max-width: 1023px) calc((100vw - 64px) / 2), (max-width: 1279px) calc((100vw - 108px) / 4), 293px"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
                />
 

@@ -20,7 +20,7 @@ const Newsletter = () => {
 
      return (
           <section className="bg-[#faf8f7] pb-14 md:pb-20">
-               <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     <div
                          className="relative overflow-hidden rounded-2xl bg-[#bd3100] px-6 py-14 text-center text-white sm:px-10 md:py-16"
                          style={{

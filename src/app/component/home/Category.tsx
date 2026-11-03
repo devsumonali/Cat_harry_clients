@@ -8,10 +8,10 @@ import CategoryCard from './CategoryCard';
 
 // Static category images
 const categoryImages: Record<string, string> = {
-     'daylight-loft': '/images/categories/photo-studio.jpg',
-     'cyc-wall': '/images/categories/film-stage.jpg',
-     soundstage: '/images/categories/podcast-room.jpg',
-     industrial: '/images/categories/art-workshop.jpg',
+     'daylight-loft': '/images/home/category-daylight.png',
+     'cyc-wall': '/images/home/category-cyc.png',
+     soundstage: '/images/home/category-soundstage.png',
+     industrial: '/images/home/category-industrial.png',
 };
 
 const Category = () => {
@@ -42,7 +42,7 @@ const Category = () => {
 
      return (
           <section className="bg-[#faf8f7] py-16 md:py-20">
-               <div className="container mx-auto max-w-7xl px-4 sm:px-6">
+               <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
                     {/* Section Header */}
                     <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
                          <div>
@@ -66,7 +66,7 @@ const Category = () => {
 
                     {/* Category Grid */}
                     {loading ? (
-                         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                               {Array.from({ length: 5 }).map((_, index) => (
                                    <div
                                         key={index}
@@ -75,14 +75,14 @@ const Category = () => {
                               ))}
                          </div>
                     ) : categories.length > 0 ? (
-                         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 lg:gap-5">
+                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
                               {categories.slice(0, 5).map((category) => (
                                    <CategoryCard
                                         key={category._id}
                                         category={category}
                                         image={
                                              categoryImages[category.slug] ||
-                                             '/images/categories/default.jpg'
+                                             '/images/home/category-daylight.png'
                                         }
                                    />
                               ))}

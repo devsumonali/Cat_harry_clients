@@ -13,7 +13,7 @@ import 'swiper/css/pagination';
 const slides = [
      {
           id: 1,
-          image: '/images/studio-1.jpg',
+          image: '/images/home/hero-daylight.png',
           subtitle: 'CREATIVE SPACES FOR EVERY VISION',
           title: 'Find Your Perfect Creative Space',
           description:
@@ -21,7 +21,7 @@ const slides = [
      },
      {
           id: 2,
-          image: '/images/studio-2.jpg',
+          image: '/images/home/hero-recording.png',
           subtitle: 'CREATE WITHOUT LIMITS',
           title: 'Where Great Ideas Come to Life',
           description:
@@ -29,7 +29,7 @@ const slides = [
      },
      {
           id: 3,
-          image: '/images/studio-3.jpg',
+          image: '/images/home/hero-soundstage.png',
           subtitle: 'YOUR SPACE. YOUR STORY.',
           title: 'Book a Studio. Make Something Amazing.',
           description:
@@ -73,7 +73,7 @@ export default function HeroSlider() {
                                    <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/55 to-black/20" />
 
                                    {/* Content */}
-                                   <div className="container relative z-10 mx-auto w-full px-5 py-20 sm:px-8 lg:px-12">
+                                   <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-20 sm:px-6">
                                         <div className="max-w-2xl text-white">
                                              <p className="mb-5 text-xs font-semibold tracking-[0.22em] text-orange-400 sm:text-sm">
                                                   {slide.subtitle}
