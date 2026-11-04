@@ -5,6 +5,7 @@ import Navbar from './component/layout/Navbar';
 import { Toaster } from 'react-hot-toast';
 import Footer from './component/layout/Footer';
 import { Suspense } from 'react';
+import JwtSessionSync from './component/shared/JwtSessionSync';
 
 const inter = Inter({
      subsets: ['latin'],
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           <html lang="en" className={inter.variable} suppressHydrationWarning>
                <head><script dangerouslySetInnerHTML={{ __html: "try{document.documentElement.dataset.theme=localStorage.getItem('studiospace-theme')==='dark'?'dark':'light'}catch(e){}" }} /></head>
                <body className="flex min-h-screen flex-col font-sans antialiased">
+                    <JwtSessionSync />
                     <Suspense fallback={<div className="h-20 border-b border-[#eee7e3] bg-white" aria-label="Loading navigation" />}>
                          <Navbar />
                     </Suspense>

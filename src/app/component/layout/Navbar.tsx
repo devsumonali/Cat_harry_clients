@@ -7,6 +7,7 @@ import Image from 'next/image';
 import toast from 'react-hot-toast';
 import ThemeToggle from '@/app/component/shared/ThemeToggle';
 import { authClient } from '@/app/libs/auth-client';
+import { clearJwtSession } from '@/app/component/shared/JwtSessionSync';
 import { FiAperture, FiMenu, FiX, FiUser } from 'react-icons/fi';
 
 const navLinks = [
@@ -41,6 +42,7 @@ const Navbar = () => {
           if (loggingOut) return;
           setLoggingOut(true);
           try {
+               await clearJwtSession();
                const result = await authClient.signOut();
                if (result.error) throw new Error(result.error.message || 'Unable to log out.');
                setProfileOpen(false);

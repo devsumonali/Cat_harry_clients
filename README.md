@@ -42,7 +42,7 @@ Private: `/add-studio`, `/my-listings`, `/my-bookings`, `/studios/edit/[id]`, an
 
 ## Architecture
 
-All studio, booking, wishlist and message data goes through Express API helpers in `src/app/libs/api.ts`. My Bookings uses `GET /api/studios/my-booking?email=...`. Better Auth, MongoDB and ImgBB uploads run in Express. Next.js rewrites `/api/*` to Express, keeping browser sessions on the frontend origin. No custom JWT implementation has been added; that is the next phase.
+All studio, booking, wishlist and message data goes through Express API helpers in `src/app/libs/api.ts`. My Bookings uses `GET /api/studios/my-booking?email=...`. Better Auth, MongoDB and ImgBB uploads run in Express. Next.js rewrites `/api/*` to Express, keeping browser sessions on the frontend origin. The backend issues a short-lived JWT as a HTTPOnly cookie after authentication and requires it for private API access.
 
 ## Checks
 
@@ -59,4 +59,4 @@ Dedicated examiner credentials are pending. Until they are supplied, use Registe
 
 Before submission, supply dedicated examiner credentials and ensure meaningful GitHub commit history (at least 15 client and 8 server commits). Verify Google login, image upload and private-route reload on the deployed site.
 
-Current authentication uses Better Auth sessions. The assignment-specific JWT + HTTPOnly cookie implementation is planned for the next phase and is not implemented yet. Optional PDF invoices are not implemented.
+Authentication uses Better Auth sessions plus a short-lived JWT stored in a HTTPOnly cookie. Set `JWT_SECRET` only in the backend environment before deployment. Optional PDF invoices are not implemented.

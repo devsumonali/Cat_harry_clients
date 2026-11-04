@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { authClient } from './auth-client';
 import { getPasswordError, getSafeCallbackURL } from './auth-utils';
+import { syncJwtSession } from '@/app/component/shared/JwtSessionSync';
 
 export function useAuthForm(mode: 'login' | 'register') {
      const router = useRouter();
@@ -49,6 +50,7 @@ export function useAuthForm(mode: 'login' | 'register') {
                     toast.success('Account created! Please log in.');
                     router.replace(`/login?callbackURL=${encodeURIComponent(callbackURL)}`);
                } else {
+                    await syncJwtSession();
                     toast.success('Welcome back!');
                     router.replace(callbackURL);
                     router.refresh();
