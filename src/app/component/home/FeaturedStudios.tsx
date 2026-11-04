@@ -11,12 +11,13 @@ import StudioCard from './StudioCard';
 const FeaturedStudios = () => {
      const [studios, setStudios] = useState<TStudio[]>([]);
      const [loading, setLoading] = useState(true);
+     const [error, setError] = useState<string | null>(null);
      const swiperRef = useRef<SwiperType | null>(null);
 
      useEffect(() => {
           const getStudios = async () => {
                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/featured`);
+                    const response = await fetch('/api/studios/featured', { cache: 'no-store' });
 
                     if (!response.ok) {
                          throw new Error('Failed to fetch studios');
@@ -27,12 +28,13 @@ const FeaturedStudios = () => {
                     setStudios(
                          Array.isArray(result)
                               ? result
-                              : Array.isArray(result.data)
+                              : Array.isArray(result?.data)
                                 ? result.data
                                 : [],
                     );
                } catch (error) {
                     console.error('Studio fetch error:', error);
+                    setError('Unable to load studios. Please try again later.');
                } finally {
                     setLoading(false);
                }
@@ -88,6 +90,10 @@ const FeaturedStudios = () => {
                                    />
                               ))}
                          </div>
+                    ) : error ? (
+                         <p role="alert" className="py-10 text-center text-sm text-red-600">
+                              {error}
+                         </p>
                     ) : studios.length > 0 ? (
                          <Swiper
                               onSwiper={(swiper) => {
