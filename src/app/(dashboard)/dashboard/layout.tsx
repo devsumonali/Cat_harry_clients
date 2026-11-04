@@ -11,7 +11,7 @@ async function DashboardContent({ children }: DashboardLayoutProps) {
      return (
           <div className="flex-1 bg-[#fcfaf9]">
                <div className="container mx-auto flex flex-col gap-6 px-4 py-8 lg:flex-row lg:gap-7 lg:px-0">
-                    <Sidebar name={session.user.name} role={session.user.email} bookingCount={0} hasUnreadMessages={false} />
+                    <Sidebar image={session.user.image} name={session.user.name} role={session.user.email} bookingCount={0} hasUnreadMessages={false} />
                     <main className="min-w-0 flex-1">{children}</main>
                </div>
           </div>

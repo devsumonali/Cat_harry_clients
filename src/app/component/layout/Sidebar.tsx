@@ -3,6 +3,7 @@
 import type { SidebarProps } from '@/app/types/type';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getDashboardSummary } from '@/app/libs/api';
@@ -13,6 +14,7 @@ import {
      FiGrid,
      FiMessageSquare,
      FiSettings,
+     FiPlusCircle,
      FiZap,
 } from 'react-icons/fi';
 
@@ -23,16 +25,19 @@ const menuItems = [
      { label: 'Saved Spaces', href: '/dashboard/saved_spaces', icon: FiBookmark },
      { label: 'Messages', href: '/dashboard/messages', icon: FiMessageSquare },
      { label: 'Settings', href: '/dashboard/settings', icon: FiSettings },
-     { label: 'Add Studios', href: '/dashboard/add_studios', icon: FiSettings },
+     { label: 'Add Studios', href: '/dashboard/add_studios', icon: FiPlusCircle },
 ];
 
 export default function Sidebar({
      name = 'Alex Rivers',
+     image,
      role = 'Director & Creator',
      bookingCount = 3,
      hasUnreadMessages = true,
 }: SidebarProps) {
      const pathname = usePathname();
+     const [failedImage, setFailedImage] = useState<string | null>(null);
+     const showImage = image && /^https?:\/\//i.test(image) && failedImage !== image;
      const [counts, setCounts] = useState({ bookingCount, hasUnreadMessages });
      useEffect(() => {
           let active = true;
@@ -61,10 +66,21 @@ export default function Sidebar({
                <div className="flex items-center gap-3 rounded-xl bg-[#f6f4f3] px-5 py-5">
                     <div className="relative shrink-0">
                          <div
-                              className="flex size-12 items-center justify-center rounded-full bg-[#ead8c8] text-sm font-semibold text-[#713b24]"
-                              aria-hidden="true"
+                              className="relative flex size-12 items-center justify-center overflow-hidden rounded-full bg-[#ead8c8] text-sm font-semibold text-[#713b24]"
                          >
-                              {initials}
+                              {showImage ? (
+                                   <Image
+                                        src={image}
+                                        alt={name + "'s profile photo"}
+                                        fill
+                                        unoptimized
+                                        sizes="48px"
+                                        className="object-cover"
+                                        onError={() => setFailedImage(image)}
+                                   />
+                              ) : (
+                                   <span aria-hidden="true">{initials}</span>
+                              )}
                          </div>
                          <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-[#f6f4f3] bg-[#27ae76]">
                               <span className="sr-only">Online</span>

@@ -100,6 +100,7 @@ export interface StudioImageProps {
 }
 
 export interface SidebarProps {
+     image?: string | null;
      name?: string;
      role?: string;
      bookingCount?: number;
@@ -204,7 +205,7 @@ export interface ConfirmationRequest {
 export interface StudioFormProps { studio?: TStudioDetails; }
 export interface ImageUploadProps { initialValue?: string; onBusyChange?: (busy: boolean) => void; }
 export interface SaveStudioProps { studioId: string; }
-export interface SessionUser { id: string; name: string; email: string; }
+export interface SessionUser { id: string; name: string; email: string; image?: string | null; }
 export interface DashboardSummary { bookingCount: number; hasUnreadMessages: boolean; }
 export interface MutationResponse extends BookingResponse { success?: boolean; }
 export interface StudioReview { _id?: string; name: string; rating: number; comment: string; }

@@ -2,7 +2,9 @@
 
 StudioSpace connects creators with photography, film, podcast and music studios.
 
-**Live site:** Pending deployment. Add the actual deployed URL before submission.
+**Live site:** [StudioSpace](https://cat-harry-clients.vercel.app)
+
+**Repositories:** [Frontend](https://github.com/devsumonali/Cat_harry_clients) | [Backend](https://github.com/devsumonali/Cat_harry_server)
 
 ## Features
 
@@ -21,8 +23,12 @@ Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, Better Auth, Swiper
 ## Run locally
 
 1. Install dependencies with `npm install`.
-2. Configure frontend API URLs using `.env.example`.
-3. Configure private credentials in `../Cat_harry_server/.env`; see [backend setup](../Cat_harry_server/README.md).
+2. Create `.env` in the frontend root with:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:8000/api
+   BACKEND_API_URL=http://localhost:8000/api
+   ```
+3. Configure private credentials in `../Cat_harry_server/.env`; see [backend setup](https://github.com/devsumonali/Cat_harry_server#readme).
 4. Run `npm start` in the backend and `npm run dev` here.
 5. Open http://localhost:3000.
 
@@ -49,8 +55,8 @@ All studio, booking, wishlist and message data goes through Express API helpers 
 
 ## Examiner access and submission
 
-A dedicated examiner account has not been supplied. Create one through Register on the deployed app and put its email/password here before submission; never publish your personal account credentials.
+Dedicated examiner credentials are pending. Until they are supplied, use Register on the live site to create a test account, then log in. Do not use or publish personal account credentials.
 
-Before submission: add the live URL, the dedicated examiner credentials, both GitHub repository links, and meaningful commit history (at least 15 client and 8 server commits). Verify Google login, image upload and cross-origin sessions on the deployed domains.
+Before submission, supply dedicated examiner credentials and ensure meaningful GitHub commit history (at least 15 client and 8 server commits). Verify Google login, image upload and private-route reload on the deployed site.
 
-Optional PDF invoices are not implemented. JWT security is intentionally deferred. Backend deployment and real OAuth/upload verification require your credentials and backend setup.
+Current authentication uses Better Auth sessions. The assignment-specific JWT + HTTPOnly cookie implementation is planned for the next phase and is not implemented yet. Optional PDF invoices are not implemented.
