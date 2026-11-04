@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @import "./theme.css";
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 @theme inline {
      --font-sans: var(--font-inter), Arial, sans-serif;
 }
