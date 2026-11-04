@@ -97,7 +97,7 @@ export default function HeroSlider() {
                                                   </Link>
 
                                                   <Link
-                                                       href="/add-studio"
+                                                       href="/studios"
                                                        className="inline-flex items-center rounded-lg border border-white/70 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-gray-900"
                                                   >
                                                        Host Your Space

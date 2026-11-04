@@ -65,12 +65,14 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                     </div>
 
                     {/* Category & Area */}
-                    <p className="mt-2 truncate text-xs text-[#77716d]">
-                         {categoryName}
+                    <div className="mt-2 flex min-w-0 items-center gap-2 text-xs text-[#77716d]">
+                         <span className="shrink-0 rounded-full bg-[#fff0e9] px-2.5 py-1 font-medium text-[#b92d00]">
+                              {categoryName}
+                         </span>
                          {studio.squareFootage
-                              ? ` • ${Number(studio.squareFootage).toLocaleString()} sq ft`
+                              ? <span className="truncate">{Number(studio.squareFootage).toLocaleString()} sq ft</span>
                               : ''}
-                    </p>
+                    </div>
 
                     <div className="my-3 border-t border-[#f0ece9]" />
 
@@ -94,7 +96,7 @@ const StudioCard = ({ studio }: StudioCardProps) => {
                               href={`/explore_studios/${studio._id}`}
                               className="rounded-full bg-[#f0eded] px-3 py-2 text-[10px] font-medium text-[#302825] transition hover:bg-[#D52B00] hover:text-white"
                          >
-                              View More
+                              View Details
                          </Link>
                     </div>
                </div>
